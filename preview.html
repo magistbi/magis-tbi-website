@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ADNU MAGIS TBI | Innovation Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#b1c5ff",
+                        "surface-container-low": "#eff4ff",
+                        "on-tertiary-container": "#5c9af8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#001b3d",
+                        "on-secondary-container": "#6f5400",
+                        "on-secondary": "#ffffff",
+                        "outline": "#747782",
+                        "tertiary-fixed": "#d6e3ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#251a00",
+                        "on-primary-fixed-variant": "#224489",
+                        "secondary-fixed": "#ffdf99",
+                        "tertiary-fixed-dim": "#a9c7ff",
+                        "on-surface-variant": "#444651",
+                        "surface-variant": "#d3e4fe",
+                        "outline-variant": "#c4c6d2",
+                        "success-teal": "#0D9488",
+                        "secondary-fixed-dim": "#f6bf22",
+                        "inverse-surface": "#213145",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-secondary-fixed-variant": "#5a4300",
+                        "on-surface": "#0b1c30",
+                        "tertiary": "#001c3f",
+                        "secondary-container": "#ffc72c",
+                        "surface-container": "#e5eeff",
+                        "surface-tint": "#3d5ca2",
+                        "on-primary-container": "#7a97e2",
+                        "ink-bold": "#0F172A",
+                        "secondary": "#775a00",
+                        "inverse-primary": "#b1c5ff",
+                        "primary-fixed": "#dae2ff",
+                        "surface-subtle": "#F8FAFC",
+                        "on-tertiary-fixed-variant": "#00468c",
+                        "primary-container": "#002d72",
+                        "on-background": "#0b1c30",
+                        "tertiary-container": "#003165",
+                        "surface": "#f8f9ff",
+                        "surface-dim": "#cbdbf5",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-fixed": "#001946",
+                        "error": "#ba1a1a",
+                        "surface-container-high": "#dce9ff",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "primary": "#001a48",
+                        "background": "#f8f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "stack-md": "16px",
+                        "section-gap": "80px",
+                        "gutter": "24px",
+                        "stack-lg": "32px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Montserrat"],
+                        "display-lg-mobile": ["Montserrat"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Montserrat"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-sm": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.05em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(0, 26, 72, 0.7), rgba(0, 26, 72, 0.9));
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface/90 backdrop-blur-md sticky top-0 z-50 shadow-sm border-b border-outline-variant">
+<div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto py-4">
+<div class="flex items-center gap-4">
+<img alt="ADNU MAGIS TBI Logo" class="h-12 w-12 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLscZLyXQYnHIPaUnDa-4TYcjgoPpQ3XVXd5Mgz1riFT1eiZThSM6LDX17D7iz21E625v7QtHeTr79gLaos2UIHT0bUHyP9Pv7j-Uu8r5teWs0J6b0zgUC5cvv9mv_WIKd-Nl94DEBsIt0BbFuTel-RqBWmDzPmVp3vvVZoilkPhFAObxXsSGyCaA6e1tKlsuhXJLJxE4wEN_MfUqAwsKpc-Eg-Xyds3f_CTFklQDNQMxPp9qCsVZz9WcXE"/>
+<span class="font-display-lg text-headline-md font-bold text-primary">ADNU MAGIS TBI</span>
+</div>
+<nav class="hidden md:flex items-center space-x-8">
+<a class="font-display-lg text-body-md text-primary font-bold border-b-2 border-secondary" href="#">Home</a>
+<a class="font-display-lg text-body-md text-on-surface-variant hover:text-primary transition-all duration-300" href="#">About</a>
+<a class="font-display-lg text-body-md text-on-surface-variant hover:text-primary transition-all duration-300" href="#">Programs</a>
+<a class="font-display-lg text-body-md text-on-surface-variant hover:text-primary transition-all duration-300" href="#">Events</a>
+<a class="font-display-lg text-body-md text-on-surface-variant hover:text-primary transition-all duration-300" href="#">Blog</a>
+</nav>
+<div class="flex items-center gap-4">
+<a class="hidden lg:block text-primary font-semibold hover:opacity-80" href="#">Book Facility</a>
+<button class="bg-secondary-container text-on-secondary-container px-6 py-2.5 rounded-lg font-bold shadow-sm transition-all duration-300 hover:scale-95 active:scale-90">
+                    Contact Us
+                </button>
+</div>
+</div>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative h-[85vh] flex items-center overflow-hidden bg-primary">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center opacity-40 mix-blend-overlay" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAQNQCXHbbfMHzEDDKNSSM1_angudws2cn9Ks2m5Xa5YG5C5-dhljFa5e1w056CjLGOB_2kfQmKC4Zs5OR5IN63NWyzMBsHBS2oG5PUcrJhZiQm_4O1v7bGbBDZme5OUqgG0zZt9nkDFUEw97eM0AIzzEDqZFfJGNFh4RBbK509xHG08y09FpOQLVap5pjstd4RxF0phThBBkaIB2HXAZxPBcNlrKFLnftVAO27KFu48yCZ1_vHUcIOr7-Vpuh5mUmTUWeaVnSUEC4')"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-container-max mx-auto px-gutter w-full">
+<div class="max-w-2xl">
+<h1 class="font-display-lg text-display-lg text-on-primary mb-6 leading-tight">
+                        MAGIS Innovate.<br/>
+                        MAGIS Impact.<br/>
+<span class="text-secondary-container">MAGIS Opportunity.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-primary/90 mb-8 max-w-xl">
+                        Rooted in Jesuit values and the spirit of "Magis," we champion ethical entrepreneurship to maximize alliances for a greater innovative society.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<button class="bg-secondary-container text-on-secondary-container px-8 py-4 rounded-lg font-bold text-lg hover:bg-secondary-fixed transition-all shadow-lg hover:-translate-y-1">
+                            Explore Programs
+                        </button>
+<button class="border-2 border-on-primary text-on-primary px-8 py-4 rounded-lg font-bold text-lg hover:bg-on-primary hover:text-primary transition-all">
+                            Learn More
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Incubation Program Section -->
+<section class="py-section-gap px-gutter max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-display-lg text-display-lg text-primary mb-4">Empowering Innovation</h2>
+<p class="max-w-2xl mx-auto text-on-surface-variant text-body-lg">We provide the structural foundations and ethical guidance for entrepreneurs to build sustainable and impactful technology ventures.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Program Card 1 -->
+<div class="bg-white border border-outline-variant p-8 rounded-xl shadow-sm hover:shadow-md transition-all group">
+<div class="w-16 h-16 bg-surface-container-high rounded-lg flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-4xl">rocket_launch</span>
+</div>
+<h3 class="font-display-lg text-headline-md text-primary mb-4">Startup Incubation</h3>
+<p class="text-on-surface-variant mb-6">Tailored support for early-stage startups, focusing on AI-driven governance and GreenTech solutions for climate resilience.</p>
+<a class="text-secondary font-bold flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
+                        Discover More <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<!-- Program Card 2 -->
+<div class="bg-white border border-outline-variant p-8 rounded-xl shadow-sm hover:shadow-md transition-all group">
+<div class="w-16 h-16 bg-surface-container-high rounded-lg flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-4xl">palette</span>
+</div>
+<h3 class="font-display-lg text-headline-md text-primary mb-4">Creative Economy</h3>
+<p class="text-on-surface-variant mb-6">Leadership in animation and game development, fostering a vibrant ecosystem for Bicol's creative talents.</p>
+<a class="text-secondary font-bold flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
+                        View Research <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+<!-- Program Card 3 -->
+<div class="bg-white border border-outline-variant p-8 rounded-xl shadow-sm hover:shadow-md transition-all group">
+<div class="w-16 h-16 bg-surface-container-high rounded-lg flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-4xl">groups</span>
+</div>
+<h3 class="font-display-lg text-headline-md text-primary mb-4">Ethical Entrepreneurship</h3>
+<p class="text-on-surface-variant mb-6">Integrating Jesuit values into business models to ensure social impact and responsible growth.</p>
+<a class="text-secondary font-bold flex items-center gap-2 group-hover:gap-4 transition-all" href="#">
+                        Join Community <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- Impact & Achievements Section -->
+<section class="bg-primary text-on-primary py-section-gap relative overflow-hidden">
+<div class="absolute right-0 top-0 w-1/3 h-full opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[400px] absolute -right-20 -top-20">trending_up</span>
+</div>
+<div class="max-w-container-max mx-auto px-gutter relative z-10">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+<div>
+<h2 class="font-display-lg text-display-lg mb-6">Our Impact &amp; Achievements</h2>
+<p class="text-body-lg text-on-primary/80 mb-12">Tracking our progress in building the startup ecosystem of the Bicol region. We are recognized for our Creative Economy Leadership in animation and game development.</p>
+<div class="grid grid-cols-2 gap-8">
+<div>
+<div class="text-5xl font-bold text-secondary-container mb-2">30+</div>
+<div class="text-label-sm uppercase tracking-widest text-on-primary/60">Startups Incubated</div>
+</div>
+<div>
+<div class="text-5xl font-bold text-secondary-container mb-2">40%</div>
+<div class="text-label-sm uppercase tracking-widest text-on-primary/60">Funding Success Rate</div>
+</div>
+<div>
+<div class="text-5xl font-bold text-secondary-container mb-2">150+</div>
+<div class="text-label-sm uppercase tracking-widest text-on-primary/60">Mentorship Hours</div>
+</div>
+<div>
+<div class="text-5xl font-bold text-secondary-container mb-2">12</div>
+<div class="text-label-sm uppercase tracking-widest text-on-primary/60">Active Partnerships</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-4 pt-12">
+<div class="rounded-xl overflow-hidden h-64 border-4 border-white/10">
+<img alt="Startup team collaborating" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLuHZ5FDb_yXg6wxB5Nyg514qoYc46IR4y8eRwjUt3GAXXY6T6Lw7n4mSXzCk7j3fB308GC_2OZAHKG67IyxGaXSqWG7MH8Bx9_04wBqaH3wcDWRUhVOzm-4Y_UHB-vhLXjTRASvOb2I-GF3lw1lQSxn0s2KXy6nsXw1Xo_nBai2TrUv1XjgGCS6MahTk0BDo09amXPCSHC5l9n24fFeWZgbwb0bmieVw2R2huIFSg-mD3FxY9qAfs8D29w"/>
+</div>
+<div class="rounded-xl overflow-hidden h-48 border-4 border-white/10">
+<img alt="Pitch competition event" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLuAgDagtMKGTG3a5E4eBOlGtErqdEfSQEfyB6MaPjWs-lhozrm40b4gHJkKLjyqBtNC2MrJDuhfC2Q8sceNJIEBTSKfZuN1cf0PsWtoUIh39pz5z0NCX8Ok_JmwINey_TFbanAkQRXsU15Mml7mzy2Km9RNDchapI5aP1cay5m5csVk_BV171-JDfiHSTqMxeS3SUUi5T31wYaPhFTRt26lVUNhqq13owdAY3Ko_puao6tX7hxJWHYLqw"/>
+</div>
+</div>
+<div class="space-y-4">
+<div class="rounded-xl overflow-hidden h-48 border-4 border-white/10">
+<img alt="Innovation lab workshop" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLtILMeP-VewAEeHP_gJm53NHsy4IaftlTCV81D-3pY0CDibOZbEwd5vz0DICmET1HrgYaRGurqCb2mtF3BsAwmkgRgdXb4bmEogK_U6AEVfwUmo1fyH9WYHJ4u_Jo7kUDELy8cP3181Lrd3IwZJ3kcKRSM8xlPQpATMzV1se800_AlXiLHDl-kL_USox9aq1-5alFH1ub5ukR-Dr5dumwQmCdP3LzcbEobCyQQBIUF2_YxuebKo_3hAKw"/>
+</div>
+<div class="rounded-xl overflow-hidden h-64 border-4 border-white/10">
+<img alt="Mentorship session" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLuHZ5FDb_yXg6wxB5Nyg514qoYc46IR4y8eRwjUt3GAXXY6T6Lw7n4mSXzCk7j3fB308GC_2OZAHKG67IyxGaXSqWG7MH8Bx9_04wBqaH3wcDWRUhVOzm-4Y_UHB-vhLXjTRASvOb2I-GF3lw1lQSxn0s2KXy6nsXw1Xo_nBai2TrUv1XjgGCS6MahTk0BDo09amXPCSHC5l9n24fFeWZgbwb0bmieVw2R2huIFSg-mD3FxY9qAfs8D29w"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Programs and Services Section -->
+<section class="py-section-gap px-gutter max-w-container-max mx-auto">
+<div class="text-center mb-16">
+<h2 class="font-display-lg text-display-lg text-primary mb-4">Our Incubation Journey</h2>
+<p class="max-w-2xl mx-auto text-on-surface-variant text-body-lg">A structured four-stage pathway from idea to impact.</p>
+<div class="w-24 h-1 bg-secondary-container mx-auto mt-6"></div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Core Programs -->
+<div class="lg:col-span-8 bg-surface-container-low p-10 rounded-2xl border border-outline-variant">
+<h3 class="font-display-lg text-headline-md text-primary mb-8 border-l-4 border-secondary pl-4">Magis Core Programs</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-primary/20">
+<h4 class="font-bold text-primary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_1</span> Pre-Incubation
+                            </h4>
+<p class="text-sm text-on-surface-variant">Focus on Ideation and Hackathons to validate groundbreaking concepts and assemble teams.</p>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-secondary-container">
+<h4 class="font-bold text-primary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_2</span> Incubation
+                            </h4>
+<p class="text-sm text-on-surface-variant">Intensive 6-month support focusing on MVP development and Intellectual Property (IP) training.</p>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-primary/20">
+<h4 class="font-bold text-primary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_3</span> Acceleration
+                            </h4>
+<p class="text-sm text-on-surface-variant">Advanced Market Validation and scaling strategies for startups ready to penetrate global markets.</p>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-primary/20">
+<h4 class="font-bold text-primary mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_4</span> Post-Incubation
+                            </h4>
+<p class="text-sm text-on-surface-variant">Continued Alumni Support, networking opportunities, and access to follow-on investment cycles.</p>
+</div>
+</div>
+<h3 class="font-display-lg text-headline-md text-primary mt-12 mb-8 border-l-4 border-secondary pl-4">Strategic Focus Areas</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm">
+<div class="w-12 h-12 rounded-full bg-success-teal/10 flex items-center justify-center text-success-teal">
+<span class="material-symbols-outlined">eco</span>
+</div>
+<div>
+<div class="text-sm font-bold">GreenTech</div>
+<div class="text-xs text-on-surface-variant">Climate Resilience Solutions</div>
+</div>
+</div>
+<div class="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<div>
+<div class="text-sm font-bold">AI Governance</div>
+<div class="text-xs text-on-surface-variant">Data-driven Civic Impact</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Business Support -->
+<div class="lg:col-span-4 space-y-8">
+<div class="bg-primary text-on-primary p-8 rounded-2xl shadow-lg">
+<h3 class="font-display-lg text-headline-md mb-6">Business Support</h3>
+<ul class="space-y-4">
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+<span>Accounting &amp; Finance</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+<span>Legal &amp; IP Services</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+<span>Virtual Office Space</span>
+</li>
+<li class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-container">check_circle</span>
+<span>Business Registration</span>
+</li>
+</ul>
+</div>
+<div class="bg-secondary-container p-8 rounded-2xl shadow-md text-primary">
+<h3 class="font-display-lg text-headline-md mb-4">Tech Facilities</h3>
+<div class="flex items-center gap-4 p-3 bg-white/20 rounded-lg">
+<span class="material-symbols-outlined">memory</span>
+<span class="font-bold">IoT Laboratory</span>
+</div>
+<div class="flex items-center gap-4 p-3 bg-white/20 rounded-lg mt-3">
+<span class="material-symbols-outlined">draw</span>
+<span class="font-bold">Animation Studio</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Explore Our Spaces Section -->
+<section class="py-section-gap bg-surface">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+<div class="max-w-xl">
+<h2 class="font-display-lg text-display-lg text-primary mb-4">Explore Our Spaces</h2>
+<p class="text-on-surface-variant text-body-lg">Open to students, professionals, and founders. Find the perfect environment to collaborate and grow.</p>
+</div>
+<button class="bg-primary text-on-primary px-8 py-3 rounded-lg font-bold flex items-center gap-2 hover:bg-tertiary transition-all">
+                        Book a Space <span class="material-symbols-outlined">event_available</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Space 1 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-sm group">
+<div class="relative h-64 overflow-hidden">
+<img alt="Co-working Space" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLsQWDlsLyX1JpCMsHcARqXY2JteB1QwiV5B8QBaLbfWTEWhiSFjiqnkhe7CcXaqik0Ul3pWe6YFRyKRt-XW9ZVDGhDLeyTWaMp511ysrwMY1axQTuNeoCQ_r1JRaBarMkBbKeN7Rmxoe3V12y524kSIENCimfdzNQfn0v33n_uIS8NiFLIAZkOVoSrZJSFUtpSixqpvz8AAUp_HwlKvS5c71sjtgQ5SHa6yX0B2WnllmQuE4C9bt8QURhM"/>
+<div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded text-sm font-bold">Productivity Zone</div>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-2 mb-4 text-secondary">
+<span class="material-symbols-outlined">laptop_mac</span>
+<span class="font-bold uppercase tracking-wider text-xs">Available Daily</span>
+</div>
+<h3 class="font-display-lg text-headline-md text-primary mb-3">Co-Working Space</h3>
+<p class="text-on-surface-variant">A flexible space designed for individual use, study groups, or full-space rentals.</p>
+</div>
+</div>
+<!-- Space 2 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-sm group">
+<div class="relative h-64 overflow-hidden">
+<img alt="Board Room" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLs3b8InXs8NtKePIlVeG3Y3l7C_6VWWPs08tZCNZRdGoTH1iNLRCCUgdfSES9jq7v7uOFrucaN19jakyVSuDwoECTS9ml9y5DRriQ0UoTPk3HQZ_Kzes8zIT2lWIMzZAdc2YXXpnCvOpp7sRItNha3sXTD6K_YAwSq5C92uTK_jSHMIXANlw5ap1-7XaOYkc59N6xlHTaNpiUJRNnzhH4UiMb7ZpyRhuS_HFtoEnwLhqzizJ_5ZmawyRl0"/>
+<div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded text-sm font-bold">Executive Suite</div>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-2 mb-4 text-secondary">
+<span class="material-symbols-outlined">meeting_room</span>
+<span class="font-bold uppercase tracking-wider text-xs">Private Booking</span>
+</div>
+<h3 class="font-display-lg text-headline-md text-primary mb-3">Board Room</h3>
+<p class="text-on-surface-variant">Ideal for physical or virtual meetings, client sessions, and strategy planning.</p>
+</div>
+</div>
+<!-- Space 3 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-sm group">
+<div class="relative h-64 overflow-hidden">
+<img alt="Roof Deck" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida/AP1WRLt5w8iBamV9HkkMokbNK8tDcf45ZgQLfTzFLgo1UcGb98Vl14mJH3u5d_IfUC-W_MmarG0aqO3zA8-scjPDM1_Npf87lBjHE8LkIIh8GPv_md1fUgHujKSDXlm6dpU6aXyiF7NRWpJkYA_JLLLzsXOLwtX1W_kmFC2W_eCt2Ywber_pd8_6kG4itZx43wt2wuKAmjyGZrE7_boj0zAIVmQut0G4m6z9Z2VweMY7PcFlPJOH9-x7wNxxOw"/>
+<div class="absolute top-4 left-4 bg-primary text-on-primary px-3 py-1 rounded text-sm font-bold">Creative Venue</div>
+</div>
+<div class="p-8">
+<div class="flex items-center gap-2 mb-4 text-secondary">
+<span class="material-symbols-outlined">nature_people</span>
+<span class="font-bold uppercase tracking-wider text-xs">Event Ready</span>
+</div>
+<h3 class="font-display-lg text-headline-md text-primary mb-3">Roof Deck</h3>
+<p class="text-on-surface-variant">Open-air venue perfect for networking events, meetups, and informal gatherings.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Our Startup Graduates Section -->
+<section class="py-section-gap bg-surface">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="text-center mb-16">
+<h2 class="font-display-lg text-display-lg text-primary mb-4">Our Startup Graduates</h2>
+<p class="max-w-2xl mx-auto text-on-surface-variant text-body-lg">Celebrating the success of our alumni who have transitioned from ideas to impactful market leaders.</p>
+<div class="w-24 h-1 bg-secondary-container mx-auto mt-6"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Graduate 1 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-sm border border-outline-variant group hover:shadow-md transition-all">
+<div class="h-48 overflow-hidden">
+<img alt="Incubation Cohort" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLuHZ5FDb_yXg6wxB5Nyg514qoYc46IR4y8eRwjUt3GAXXY6T6Lw7n4mSXzCk7j3fB308GC_2OZAHKG67IyxGaXSqWG7MH8Bx9_04wBqaH3wcDWRUhVOzm-4Y_UHB-vhLXjTRASvOb2I-GF3lw1lQSxn0s2KXy6nsXw1Xo_nBai2TrUv1XjgGCS6MahTk0BDo09amXPCSHC5l9n24fFeWZgbwb0bmieVw2R2huIFSg-mD3FxY9qAfs8D29w"/>
+</div>
+<div class="p-8">
+<h3 class="font-display-lg text-headline-md text-primary mb-2">AgriTech Solutions</h3>
+<p class="text-on-surface-variant mb-6 line-clamp-2">Pioneering climate-resilient farming through IoT-driven irrigation and sustainable soil monitoring.</p>
+<a class="text-secondary font-bold flex items-center gap-2 hover:text-primary transition-colors" href="#">
+                                Success Story <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Graduate 2 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-sm border border-outline-variant group hover:shadow-md transition-all">
+<div class="h-48 overflow-hidden">
+<img alt="Startup Team" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLunKAddgPz5r5ynde74IS7Z6mr0v-X2BACgi0hRej5XZ5TTGRbYY3FbGU1L6EAUS60yvpshlL-JYO9etze-7U0__0iidwTZ-4Y0O4JinYUggvTa2G-7_GB7PahXLHN6jNBZuFcj6ru_AasqwjDuF48jMHVsuqa-bKjMs89PZ68CkWoBWb50B3dN1zvVQrNS5x7zruaMtiGQCF8Jq3YrBbBl_O8vnSrkxCfticZh9DtTIjoEQo6oHlThpPY"/>
+</div>
+<div class="p-8">
+<h3 class="font-display-lg text-headline-md text-primary mb-2">EduStream PH</h3>
+<p class="text-on-surface-variant mb-6 line-clamp-2">An interactive learning platform connecting remote students with specialized tutors across Bicol.</p>
+<a class="text-secondary font-bold flex items-center gap-2 hover:text-primary transition-colors" href="#">
+                                View Profile <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</div>
+<!-- Graduate 3 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-sm border border-outline-variant group hover:shadow-md transition-all">
+<div class="h-48 overflow-hidden">
+<img alt="Founder Session" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida/AP1WRLtILMeP-VewAEeHP_gJm53NHsy4IaftlTCV81D-3pY0CDibOZbEwd5vz0DICmET1HrgYaRGurqCb2mtF3BsAwmkgRgdXb4bmEogK_U6AEVfwUmo1fyH9WYHJ4u_Jo7kUDELy8cP3181Lrd3IwZJ3kcKRSM8xlPQpATMzV1se800_AlXiLHDl-kL_USox9aq1-5alFH1ub5ukR-Dr5dumwQmCdP3LzcbEobCyQQBIUF2_YxuebKo_3hAKw"/>
+</div>
+<div class="p-8">
+<h3 class="font-display-lg text-headline-md text-primary mb-2">FinFlow Systems</h3>
+<p class="text-on-surface-variant mb-6 line-clamp-2">Streamlining financial management for MSMEs with ethical and localized accounting software.</p>
+<a class="text-secondary font-bold flex items-center gap-2 hover:text-primary transition-colors" href="#">
+                                Success Story <span class="material-symbols-outlined">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Events Section -->
+<section class="py-section-gap bg-surface-container-lowest">
+<div class="max-w-container-max mx-auto px-gutter">
+<div class="flex justify-between items-center mb-12">
+<h2 class="font-display-lg text-display-lg text-primary">Upcoming Events</h2>
+<a class="text-primary font-bold hover:underline" href="#">See All Stories</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Event 1 -->
+<div class="flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:-translate-y-2 transition-all border border-outline-variant">
+<div class="h-48 overflow-hidden">
+<img alt="Community Event" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLsEQSmHqRc79qQ1fMRdzbkfiWr9lksfTDs7bo_5fCh5DBtwS2RzR5bJQZt_ZGpH3AzKeoiPltDfT1Wxo8ry9ULlrx52rSzhhbQt6jcr-eL142oCW5xzvCNEKQzJe_0erZOZXmzXMmnnDo3F5k93cxavI3UdNjeKHGl36JQVnBvOPknqx43wQve5RgcsPrE-j-ANG4VF-G7gTPnNF5df2J51Rpo42RTpqEEndoq7fGQdaogKJD7upOmqSw"/>
+</div>
+<div class="p-6">
+<div class="text-secondary font-bold text-sm mb-2 uppercase">Workshop</div>
+<h4 class="font-bold text-primary mb-4">AI for Good: Governance Workshop</h4>
+<p class="text-sm text-on-surface-variant line-clamp-2">Exploring how AI-driven tools can improve local government efficiency.</p>
+</div>
+</div>
+<!-- Event 2 -->
+<div class="flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:-translate-y-2 transition-all border border-outline-variant">
+<div class="h-48 overflow-hidden">
+<img alt="Pitch Night" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLtILMeP-VewAEeHP_gJm53NHsy4IaftlTCV81D-3pY0CDibOZbEwd5vz0DICmET1HrgYaRGurqCb2mtF3BsAwmkgRgdXb4bmEogK_U6AEVfwUmo1fyH9WYHJ4u_Jo7kUDELy8cP3181Lrd3IwZJ3kcKRSM8xlPQpATMzV1se800_AlXiLHDl-kL_USox9aq1-5alFH1ub5ukR-Dr5dumwQmCdP3LzcbEobCyQQBIUF2_YxuebKo_3hAKw"/>
+</div>
+<div class="p-6">
+<div class="text-secondary font-bold text-sm mb-2 uppercase">Networking</div>
+<h4 class="font-bold text-primary mb-4">Bicol Creative Mixer 2024</h4>
+<p class="text-sm text-on-surface-variant line-clamp-2">Connecting animation studios and game developers with investors.</p>
+</div>
+</div>
+<!-- Event 3 -->
+<div class="flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:-translate-y-2 transition-all border border-outline-variant">
+<div class="h-48 overflow-hidden">
+<img alt="Demo Day" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLuHZ5FDb_yXg6wxB5Nyg514qoYc46IR4y8eRwjUt3GAXXY6T6Lw7n4mSXzCk7j3fB308GC_2OZAHKG67IyxGaXSqWG7MH8Bx9_04wBqaH3wcDWRUhVOzm-4Y_UHB-vhLXjTRASvOb2I-GF3lw1lQSxn0s2KXy6nsXw1Xo_nBai2TrUv1XjgGCS6MahTk0BDo09amXPCSHC5l9n24fFeWZgbwb0bmieVw2R2huIFSg-mD3FxY9qAfs8D29w"/>
+</div>
+<div class="p-6">
+<div class="text-secondary font-bold text-sm mb-2 uppercase">Demo Day</div>
+<h4 class="font-bold text-primary mb-4">Incubation Batch #05 Finale</h4>
+<p class="text-sm text-on-surface-variant line-clamp-2">Watch our top startups pitch their final products.</p>
+</div>
+</div>
+<!-- Event 4 -->
+<div class="flex flex-col bg-white rounded-xl overflow-hidden shadow-sm hover:-translate-y-2 transition-all border border-outline-variant">
+<div class="h-48 overflow-hidden">
+<img alt="Strategic Meeting" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLuAgDagtMKGTG3a5E4eBOlGtErqdEfSQEfyB6MaPjWs-lhozrm40b4gHJkKLjyqBtNC2MrJDuhfC2Q8sceNJIEBTSKfZuN1cf0PsWtoUIh39pz5z0NCX8Ok_JmwINey_TFbanAkQRXsU15Mml7mzy2Km9RNDchapI5aP1cay5m5csVk_BV171-JDfiHSTqMxeS3SUUi5T31wYaPhFTRt26lVUNhqq13owdAY3Ko_puao6tX7hxJWHYLqw"/>
+</div>
+<div class="p-6">
+<div class="text-secondary font-bold text-sm mb-2 uppercase">Seminar</div>
+<h4 class="font-bold text-primary mb-4">Intellectual Property for Creatives</h4>
+<p class="text-sm text-on-surface-variant line-clamp-2">Securing your innovations in animation and tech.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Partners Section -->
+<section class="py-20 bg-primary text-on-primary">
+<div class="max-w-container-max mx-auto px-gutter text-center">
+<h3 class="text-label-sm uppercase tracking-widest text-on-primary/60 mb-8">Supported by</h3>
+<div class="flex flex-wrap justify-center items-center gap-12 md:gap-24 grayscale brightness-200 contrast-50 opacity-80">
+<img alt="Partner 1" class="h-16 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLscZLyXQYnHIPaUnDa-4TYcjgoPpQ3XVXd5Mgz1riFT1eiZThSM6LDX17D7iz21E625v7QtHeTr79gLaos2UIHT0bUHyP9Pv7j-Uu8r5teWs0J6b0zgUC5cvv9mv_WIKd-Nl94DEBsIt0BbFuTel-RqBWmDzPmVp3vvVZoilkPhFAObxXsSGyCaA6e1tKlsuhXJLJxE4wEN_MfUqAwsKpc-Eg-Xyds3f_CTFklQDNQMxPp9qCsVZz9WcXE"/>
+<div class="flex flex-col items-center">
+<span class="text-2xl font-bold tracking-tighter italic">DOST-PCIEERD</span>
+<span class="text-[10px] tracking-widest uppercase">HEIRIT Program</span>
+</div>
+<div class="font-display-lg text-2xl font-bold">ADNU</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="py-section-gap relative overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD9b9_ngsjQb8myblB7PTOf5OR6kyttd7IuIy9hydQchn5Ll583uqUiaD-unTRmgSsHqCu1ShvBMH0-obPsaSLZeii1t4JTu_Am7rj7d1YHZK-EUP7yIsF6-xUAxWlisaa8YqvEpBpAHmEjiMfw6ZkfdHrk2ZAgvK52ky66rMUhLQK1zlUW7RlLU1yW2s5ZTB8AMhbysNhfRQGl2HthPm4RqnuXLCO9IxeN-WvnN3qcQL3YkR598pibpuk20y9Wf_cXKmSnkjEYwFI')"></div>
+<div class="absolute inset-0 bg-primary/80 backdrop-blur-sm"></div>
+</div>
+<div class="relative z-10 max-w-2xl mx-auto text-center px-gutter">
+<h2 class="font-display-lg text-display-lg text-on-primary mb-6">Let us be part of your startup journey!</h2>
+<p class="text-on-primary/80 text-body-lg mb-10">Join a network of ethical innovators shaping the future of the Bicol region through Magis values and technology.</p>
+<div class="flex flex-col sm:flex-row justify-center gap-4">
+<button class="bg-secondary-container text-on-secondary-container px-10 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-all shadow-xl">
+                        Apply Now
+                    </button>
+<button class="bg-white text-primary px-10 py-4 rounded-lg font-bold text-lg hover:scale-105 transition-all shadow-xl">
+                        Contact Us
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-primary text-on-primary">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-stack-lg px-gutter py-section-gap max-w-container-max mx-auto">
+<div class="md:col-span-5">
+<div class="flex items-center gap-3 mb-6">
+<img alt="Logo" class="h-10 w-10 brightness-0 invert" src="https://lh3.googleusercontent.com/aida/AP1WRLscZLyXQYnHIPaUnDa-4TYcjgoPpQ3XVXd5Mgz1riFT1eiZThSM6LDX17D7iz21E625v7QtHeTr79gLaos2UIHT0bUHyP9Pv7j-Uu8r5teWs0J6b0zgUC5cvv9mv_WIKd-Nl94DEBsIt0BbFuTel-RqBWmDzPmVp3vvVZoilkPhFAObxXsSGyCaA6e1tKlsuhXJLJxE4wEN_MfUqAwsKpc-Eg-Xyds3f_CTFklQDNQMxPp9qCsVZz9WcXE"/>
+<span class="font-display-lg text-headline-md font-bold text-secondary-fixed">ADNU MAGIS TBI</span>
+</div>
+<p class="text-surface-variant max-w-sm mb-8">Guided by Jesuit values, we provide access to markets and resources, propelling startups toward ethical and impactful success.</p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined text-sm">face_nod</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined text-sm">share</span>
+</a>
+<a class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-secondary-fixed hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined text-sm">alternate_email</span>
+</a>
+</div>
+</div>
+<div class="md:col-span-2">
+<h4 class="font-bold text-secondary-fixed mb-6 uppercase tracking-widest text-sm">Platform</h4>
+<ul class="space-y-4 text-surface-variant">
+<li><a class="hover:text-secondary-fixed transition-colors" href="#">About Us</a></li>
+<li><a class="hover:text-secondary-fixed transition-colors" href="#">Stories</a></li>
+<li><a class="hover:text-secondary-fixed transition-colors" href="#">Events</a></li>
+<li><a class="hover:text-secondary-fixed transition-colors" href="#">Contacts</a></li>
+</ul>
+</div>
+<div class="md:col-span-2">
+<h4 class="font-bold text-secondary-fixed mb-6 uppercase tracking-widest text-sm">Resources</h4>
+<ul class="space-y-4 text-surface-variant">
+<li><a class="hover:text-secondary-fixed transition-colors" href="#">FAQ's</a></li>
+<li><a class="hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-secondary-fixed transition-colors" href="#">Book Facility</a></li>
+</ul>
+</div>
+<div class="md:col-span-3">
+<h4 class="font-bold text-secondary-fixed mb-6 uppercase tracking-widest text-sm">Location</h4>
+<p class="text-surface-variant mb-4">Ateneo de Naga University, Naga City, Camarines Sur, Philippines</p>
+<div class="h-32 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center italic text-xs text-white/40">
+<span class="material-symbols-outlined mr-2">location_on</span>
+                    Naga City, Philippines
+                </div>
+</div>
+</div>
+<div class="border-t border-white/10 py-8 px-gutter">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-surface-variant">
+<p>© 2024 ADNU MAGIS TBI. Supported by DOST-PCIEERD HEIRIT Program.</p>
+<div class="flex gap-6">
+<span>Ateneo Owned &amp; Operated</span>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-md');
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.add('shadow-sm');
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body></html>
