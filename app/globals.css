@@ -193,6 +193,47 @@
   --sidebar-ring: oklch(0.542 0.034 322.5);
 }
 
+@layer utilities {
+  .startup-carousel-viewport {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .startup-carousel-track {
+    animation: startup-carousel-scroll 40s linear infinite;
+    will-change: transform;
+  }
+
+  .startup-carousel-track--reverse {
+    animation-direction: reverse;
+  }
+
+  .startup-carousel-viewport:hover .startup-carousel-track {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .startup-carousel-track {
+      animation: none;
+      transform: none;
+    }
+
+    .startup-carousel-duplicate {
+      display: none;
+    }
+  }
+
+  @keyframes startup-carousel-scroll {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

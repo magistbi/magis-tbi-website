@@ -4,6 +4,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "ADNU MAGIS TBI | Innovation Hub",
   description: "ADNU MAGIS TBI landing page for innovation programs, spaces, alumni, events, and support.",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({

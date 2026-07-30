@@ -3,7 +3,6 @@
 import type { ReactNode, SVGProps } from "react";
 
 import {
-  magisCohorts,
   magisFacilities,
   magisFooterNotes,
   magisGoals,
@@ -15,6 +14,8 @@ import {
   magisTaglines,
   magisValuePoints,
 } from "@/lib/magis-content";
+import { buildWordPressImageUrl, getStartupGraduates } from "@/lib/wordpress";
+import type { WordPressStartup } from "@/types/wordpress";
 
 type HighlightCard = {
   title: string;
@@ -35,13 +36,6 @@ type SpaceCard = {
   icon: IconComponent;
   label: string;
   description: string;
-};
-
-type CohortCard = {
-  title: string;
-  image: string;
-  description: string;
-  linkLabel: string;
 };
 
 type GoalCard = {
@@ -240,77 +234,166 @@ const programCards: HighlightCard[] = magisPrograms.map((program, index) => ({
 
 const supportServices = magisPrograms[2]?.items ?? [];
 const facilityNames = magisFacilities.map((facility) => facility.title);
+const wordPressImageUrl = (pathname: string, fallbackUrl: string): string =>
+  buildWordPressImageUrl(pathname, fallbackUrl);
 
 const spaceCards: SpaceCard[] = magisFacilities.slice(0, 3).map((facility, index) => ({
   title: facility.title,
-  image:
+  image: wordPressImageUrl(
+    [
+      "/wp-content/uploads/2025/02/jer03825.jpg",
+      "/wp-content/uploads/2025/02/jer04028-1.jpg",
+      "/wp-content/uploads/2025/02/jer04155.jpg",
+    ][index],
     [
       "https://magistbi.com/wp-content/uploads/2025/02/jer03825.jpg",
       "https://magistbi.com/wp-content/uploads/2025/02/jer04028-1.jpg",
       "https://magistbi.com/wp-content/uploads/2025/02/jer04155.jpg",
     ][index],
+  ),
   badge: ["Productivity Zone", "Executive Suite", "Creative Venue"][index],
   icon: [LaptopMacIcon, ApartmentIcon, ForestIcon][index],
   label: ["Daily Access", "Private Booking", "Event Ready"][index],
   description: facility.summary,
 }));
 
-const cohortCards: CohortCard[] = [
-  {
-    title: `${magisCohorts[0]?.title ?? "Cohort 1"}: ${magisCohorts[0]?.status ?? ""}`,
-    image:
-      "https://lh3.googleusercontent.com/aida/AP1WRLuHZ5FDb_yXg6wxB5Nyg514qoYc46IR4y8eRwjUt3GAXXY6T6Lw7n4mSXzCk7j3fB308GC_2OZAHKG67IyxGaXSqWG7MH8Bx9_04wBqaH3wcDWRUhVOzm-4Y_UHB-vhLXjTRASvOb2I-GF3lw1lQSxn0s2KXy6nsXw1Xo_nBai2TrUv1XjgGCS6MahTk0BDo09amXPCSHC5l9n24fFeWZgbwb0bmieVw2R2huIFSg-mD3FxY9qAfs8D29w",
-    description: magisCohorts[0]?.startups.join(", ") ?? "",
-    linkLabel: "View Cohort",
-  },
-  {
-    title: `${magisCohorts[1]?.title ?? "Cohort 2"}: ${magisCohorts[1]?.status ?? ""}`,
-    image:
-      "https://lh3.googleusercontent.com/aida/AP1WRLunKAddgPz5r5ynde74IS7Z6mr0v-X2BACgi0hRej5XZ5TTGRbYY3FbGU1L6EAUS60yvpshlL-JYO9etze-7U0__0iidwTZ-4Y0O4JinYUggvTa2G-7_GB7PahXLHN6jNBZuFcj6ru_AasqwjDuF48jMHVsuqa-bKjMs89PZ68CkWoBWb50B3dN1zvVQrNS5x7zruaMtiGQCF8Jq3YrBbBl_O8vnSrkxCfticZh9DtTIjoEQo6oHlThpPY",
-    description: magisCohorts[1]?.startups.join(", ") ?? "",
-    linkLabel: "View Cohort",
-  },
-  {
-    title: "19 Total Startups",
-    image:
-      "https://lh3.googleusercontent.com/aida/AP1WRLtILMeP-VewAEeHP_gJm53NHsy4IaftlTCV81D-3pY0CDibOZbEwd5vz0DICmET1HrgYaRGurqCb2mtF3BsAwmkgRgdXb4bmEogK_U6AEVfwUmo1fyH9WYHJ4u_Jo7kUDELy8cP3181Lrd3IwZJ3kcKRSM8xlPQpATMzV1se800_AlXiLHDl-kL_USox9aq1-5alFH1ub5ukR-Dr5dumwQmCdP3LzcbEobCyQQBIUF2_YxuebKo_3hAKw",
-    description: "Cohort 1: 5 startups | Cohort 2: 14 startups | Jobs created: 70+",
-    linkLabel: "See Numbers",
-  },
-];
+function StartupLogoCard({
+  startup,
+  duplicate = false,
+}: {
+  startup: WordPressStartup;
+  duplicate?: boolean;
+}) {
+  const founderSummary =
+    startup.founderNames.length > 0
+      ? `Founded by ${startup.founderNames.join(", ")}.`
+      : "Founder details available in WordPress.";
+  const tooltip = startup.startupName;
+
+  return (
+    <figure
+      aria-hidden={duplicate || undefined}
+      className={`flex w-40 shrink-0 items-center justify-center px-2 py-3 ${
+        duplicate ? "startup-carousel-duplicate" : ""
+      }`}
+      title={tooltip}
+    >
+      <div className="flex h-20 w-full items-center justify-center">
+        {startup.logo ? (
+          <img
+            alt={startup.startupName}
+            className="max-h-14 w-full object-contain"
+            decoding="async"
+            title={tooltip}
+            src={startup.logo.url}
+            loading="lazy"
+          />
+        ) : (
+          <div
+            aria-hidden="true"
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary/35"
+          >
+            <span className="sr-only">{startup.startupName}</span>
+          </div>
+        )}
+      </div>
+    </figure>
+  );
+}
+
+function StartupCarousel({ startups }: { startups: WordPressStartup[] }) {
+  if (startups.length === 0) {
+    return (
+      <div className="rounded-[2rem] border border-dashed border-outline-variant bg-white px-8 py-10 text-center text-on-surface-variant shadow-sm">
+        <p className="font-heading text-[24px] font-semibold leading-[1.3] text-primary">
+          Startup logos will appear here once the WordPress graduates collection is available.
+        </p>
+        <p className="mt-3 text-[16px] leading-[1.6]">
+          The section stays in place so the homepage still renders cleanly while the CMS is empty
+          or temporarily unavailable.
+        </p>
+      </div>
+    );
+  }
+
+  const useTwoRows = startups.length > 10;
+  const topRowStartups = useTwoRows ? startups.filter((_, index) => index % 2 === 0) : startups;
+  const bottomRowStartups = useTwoRows ? startups.filter((_, index) => index % 2 === 1) : [];
+  const loopedTopRow = [...topRowStartups, ...topRowStartups];
+  const loopedBottomRow = [...bottomRowStartups, ...bottomRowStartups];
+
+  return (
+    <div className="startup-carousel-viewport overflow-hidden">
+      <div className="flex flex-col gap-4 py-4">
+        <div className="startup-carousel-track flex w-max gap-8 px-2">
+          {loopedTopRow.map((startup, index) => (
+            <StartupLogoCard
+              key={`${startup.id}-${index}`}
+              startup={startup}
+              duplicate={index >= topRowStartups.length}
+            />
+          ))}
+        </div>
+        {useTwoRows ? (
+          <div className="startup-carousel-track startup-carousel-track--reverse flex w-max gap-8 px-2">
+            {loopedBottomRow.map((startup, index) => (
+              <StartupLogoCard
+                key={`${startup.id}-${index}`}
+                startup={startup}
+                duplicate={index >= bottomRowStartups.length}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 const goalCards: GoalCard[] = [
   {
     category: "Goal 01",
     title: magisGoals[0],
     description: "Turn bold ideas into sustainable, high-impact startups.",
-    image:
+    image: wordPressImageUrl(
+      "/wp-content/uploads/2026/07/bold-ideas.jpg",
       "https://magistbi.com/wp-content/uploads/2026/07/bold-ideas.jpg",
+    ),
   },
   {
     category: "Goal 02",
     title: magisGoals[1],
     description: "Empower entrepreneurs and MSMEs through hands-on programs and support.",
-    image:
+    image: wordPressImageUrl(
+      "/wp-content/uploads/2026/07/futuretech.jpg",
       "https://magistbi.com/wp-content/uploads/2026/07/futuretech.jpg",
+    ),
   },
   {
     category: "Goal 03",
     title: magisGoals[2],
     description: "Drive innovation and create lasting opportunities across the Bicol Region.",
-    image:
+    image: wordPressImageUrl(
+      "/wp-content/uploads/2026/07/bicol_empower.jpg",
       "https://magistbi.com/wp-content/uploads/2026/07/bicol_empower.jpg",
-    },
+    ),
+  },
   {
     category: "Support",
     title: "DOST-PCIEERD Funded TBI",
     description: magisLocation.supportLine,
-    image: "https://magistbi.com/wp-content/uploads/2026/07/dost-pcieerd-ribbon.jpg",
+    image: wordPressImageUrl(
+      "/wp-content/uploads/2026/07/dost-pcieerd-ribbon.jpg",
+      "https://magistbi.com/wp-content/uploads/2026/07/dost-pcieerd-ribbon.jpg",
+    ),
   },
 ];
 
 const officeLogo = "/magis-logo.png";
-const dostPcieerdLogo = "https://magistbi.com/wp-content/uploads/2025/02/dost-white.png";
+const dostPcieerdLogo = wordPressImageUrl(
+  "/wp-content/uploads/2025/02/dost-white.png",
+  "https://magistbi.com/wp-content/uploads/2025/02/dost-white.png",
+);
 
 function MetricCard({ value, label }: StatItem) {
   return (
@@ -344,7 +427,9 @@ function RoundedImageCard({
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const startupGraduates = await getStartupGraduates();
+
   return (
     <main className="bg-background text-on-surface">
       <header className="sticky top-0 z-50 border-b border-outline-variant bg-surface/90 shadow-sm backdrop-blur-md">
@@ -477,29 +562,62 @@ export default function Home() {
               <div className="space-y-4 pt-12">
                 <RoundedImageCard
                   alt="Startup team collaborating"
-                  image="https://magistbi.com/wp-content/uploads/2026/07/demo-day.jpg"
+                  image={wordPressImageUrl(
+                    "/wp-content/uploads/2026/07/demo-day.jpg",
+                    "https://magistbi.com/wp-content/uploads/2026/07/demo-day.jpg",
+                  )}
                   className="h-64 border-4 border-white/10"
                 />
                 <RoundedImageCard
                   alt="Pitch competition event"
-                  image="https://magistbi.com/wp-content/uploads/2026/07/pitch-competition.jpeg"
+                  image={wordPressImageUrl(
+                    "/wp-content/uploads/2026/07/pitch-competition.jpeg",
+                    "https://magistbi.com/wp-content/uploads/2026/07/pitch-competition.jpeg",
+                  )}
                   className="h-48 border-4 border-white/10"
                 />
               </div>
               <div className="space-y-4">
                 <RoundedImageCard
                   alt="Innovation lab workshop"
-                  image="https://magistbi.com/wp-content/uploads/2026/07/hackathon.jpg"
+                  image={wordPressImageUrl(
+                    "/wp-content/uploads/2026/07/hackathon.jpg",
+                    "https://magistbi.com/wp-content/uploads/2026/07/hackathon.jpg",
+                  )}
                   className="h-48 border-4 border-white/10"
                 />
                 <RoundedImageCard
                   alt="Mentorship session"
-                  image="https://magistbi.com/wp-content/uploads/2026/07/mentorship.jpg"
+                  image={wordPressImageUrl(
+                    "/wp-content/uploads/2026/07/mentorship.jpg",
+                    "https://magistbi.com/wp-content/uploads/2026/07/mentorship.jpg",
+                  )}
                   className="h-64 border-4 border-white/10"
                 />
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="cohorts" className="bg-surface py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+            <div className="max-w-2xl">
+              <h2 className="mb-4 font-heading text-[48px] font-bold leading-[1.1] tracking-[-0.02em] text-primary">
+                IGNITE Startup Graduates
+              </h2>
+              <p className="max-w-2xl text-[18px] leading-[1.6] text-on-surface-variant">
+                A rotating showcase of the startups that have grown through the incubation
+                program.
+              </p>
+            </div>
+            <div className="rounded-full bg-secondary-container px-4 py-2 text-[12px] font-bold uppercase tracking-[0.28em] text-on-secondary-container">
+              {startupGraduates.length} startups
+            </div>
+          </div>
+
+          <StartupCarousel startups={startupGraduates} />
         </div>
       </section>
 
@@ -664,51 +782,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="cohorts" className="bg-surface py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-16 text-center">
-            <h2 className="mb-4 font-heading text-[48px] font-bold leading-[1.1] tracking-[-0.02em] text-primary">
-              IGNITE Incubation Program Cohorts
-            </h2>
-            <p className="mx-auto max-w-2xl text-[18px] leading-[1.6] text-on-surface-variant">
-              From Ideas Towards Impact to Impact Reimagined, these cohorts show the range of
-              startups growing inside MAGIS TBI.
-            </p>
-            <div className="mx-auto mt-6 h-1 w-24 bg-secondary-container" />
-          </div>
-
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {cohortCards.map((cohort) => (
-              <div
-                key={cohort.title}
-                className="group overflow-hidden rounded-xl border border-outline-variant bg-white shadow-sm transition-all hover:shadow-md"
-              >
-                <div className="h-48 overflow-hidden">
-                  <img
-                    alt={cohort.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    src={cohort.image}
-                  />
-                </div>
-                <div className="p-8">
-                  <h3 className="mb-2 font-heading text-[24px] font-semibold leading-[1.3] text-primary">
-                    {cohort.title}
-                  </h3>
-                  <p className="mb-6 line-clamp-2 text-on-surface-variant">{cohort.description}</p>
-                  <a
-                    href="#contact"
-                    className="flex items-center gap-2 font-bold text-secondary transition-colors hover:text-primary"
-                  >
-                    {cohort.linkLabel}
-                    <ArrowRightIcon className="size-5" aria-hidden="true" />
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="goals" className="bg-surface-container-lowest py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 flex items-center justify-between">
@@ -841,7 +914,7 @@ export default function Home() {
               </li>
               <li>
                 <a href="#cohorts" className="transition-colors hover:text-secondary-fixed">
-                  Cohorts
+                  Startups
                 </a>
               </li>
               <li>

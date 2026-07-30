@@ -103,6 +103,19 @@ export interface RawWordPressGalleryItem extends RawWordPressBaseContent {
   meta?: RawWordPressGalleryFields;
 }
 
+export interface RawWordPressStartupFields {
+  startup_name?: string;
+  founder_names?: string;
+  logo?: string;
+  cohort?: string;
+  description?: string;
+}
+
+export interface RawWordPressStartup extends RawWordPressBaseContent {
+  acf?: RawWordPressStartupFields;
+  meta?: RawWordPressStartupFields;
+}
+
 export interface WordPressImage {
   id: number;
   url: string;
@@ -162,6 +175,16 @@ export interface WordPressGalleryItem {
   caption: string;
   url: string;
   featuredMedia: WordPressImage | null;
+}
+
+export interface WordPressStartup {
+  id: number;
+  slug: string;
+  startupName: string;
+  founderNames: string[];
+  cohort: string | null;
+  description: string;
+  logo: WordPressImage | null;
 }
 
 export interface WordPressHomepageSnapshot {
