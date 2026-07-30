@@ -67,9 +67,10 @@ export const magisAcronym: AcronymItem[] = [
 ];
 
 export const magisIdentity = {
-  title: "About MAGIS TBI",
+  title: "ADNU MAGIS Technology Business Incubator",
+  aboutTitle: "About MAGIS TBI",
   intro:
-    "ADNU - M.A.G.I.S. TBI is a university-owned and operated technology business incubator serving technology-focused or technology-utilizing growth-oriented startups.",
+    "ADNU - MAGIS TBI is a university-owned and operated technology business incubator serving technology-focused or technology-utilizing growth-oriented startups.",
   acronym:
     'The word "MAGIS" in MAGIS TBI is an acronym for Maximizing Alliances for Greater Innovative Society.',
   vision:
@@ -81,19 +82,19 @@ export const magisIdentity = {
 
 export const magisValuePoints: ValuePoint[] = [
   {
-    title: "Unlock the tools to thrive",
+    title: "MAGIS Means More",
     description:
-      "Exclusive access to resources, expert mentorship, and hands-on support for ideas that need a clear path to scale.",
+      "It signifies a commitment to doing more, being more, and loving more for God's greater glory.",
   },
   {
-    title: "Learn, connect, grow",
+    title: "Vision & Mission",
     description:
-      "A network built through events, workshops, and direct engagement with founders, innovators, and industry leaders.",
+      "We envision MAGIS TBI as the Bicol region's launchpad for innovation, where tech-driven dreams take flight, guided by mentorship, collaboration, and Ignatian values.",
   },
   {
-    title: "The Ignatian Edge",
+    title: "Empowering Tech for Good",
     description:
-      "Entrepreneurial formation guided by purpose, service, and excellence so impact extends beyond a single venture.",
+      "Serving technology-focused or technology-utilizing growth-oriented startups with access to market and resources.",
   },
 ];
 
@@ -103,13 +104,19 @@ export const magisGoals = [
   "Drive innovation and create lasting opportunities across the Bicol Region",
 ];
 
+export const magisLaunchpad = {
+  title: "Your Launchpad to Startup Success",
+  summary:
+    "Unlock the tools to thrive: get exclusive access to resources, expert mentorship, and hands-on support to turn your idea into a scalable, sustainable business.",
+};
+
 export const magisPrograms: ProgramSection[] = [
   {
     title: "Incubation Programs",
-    summary: "Structured support that turns early ideas into viable ventures.",
+    summary: "Structured support that turns early ideas into viable concepts and startup growth.",
     items: [
-      "Pre-Incubation Program: shape raw ideas into viable concepts.",
-      "IGNITE Incubation Program: full-cycle support for startup growth.",
+      "Pre-Incubation Program: Shape raw ideas into viable concepts.",
+      "IGNITE Incubation Program: Full-cycle support for startup growth.",
     ],
   },
   {
@@ -171,8 +178,8 @@ export const magisFacilities: FacilitySection[] = [
 export const magisMetrics: Metric[] = [
   { value: "19", label: "Total startups" },
   { value: "70+", label: "Jobs created" },
-  { value: "PHP 3,360,000+", label: "Total revenue generated" },
-  { value: "PHP 205,000+", label: "Investments & grants" },
+  { value: "₱3.36M+", label: "Total revenue generated" },
+  { value: "₱205K+", label: "Investments & grants" },
 ];
 
 export const magisCohorts: CohortSection[] = [
@@ -223,6 +230,6 @@ export const magisLocation = {
 };
 
 export const magisFooterNotes = [
-  "Supported by DOST-PCIEERD HEIRIT Program",
+  "DOST-PCIEERD Funded",
   "Ateneo owned and operated",
 ] as const;
