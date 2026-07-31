@@ -367,6 +367,10 @@ const dostPcieerdLogo = wordPressImageUrl(
   "/wp-content/uploads/2025/02/dost-white.png",
   "https://magistbi.com/wp-content/uploads/2025/02/dost-white.png",
 );
+const adnuLogo = wordPressImageUrl(
+  "/wp-content/uploads/2026/07/adnu_logo.png",
+  "https://adnumagis.wpcomstaging.com/wp-content/uploads/2026/07/adnu_logo.png",
+);
 
 function MetricCard({ value, label }: StatItem) {
   return (
@@ -801,12 +805,7 @@ export default async function Home() {
           </h3>
           <div className="flex flex-wrap items-center justify-center gap-6 opacity-80 grayscale brightness-200 contrast-50 sm:gap-12 md:gap-24">
             <img alt="DOST PCIEERD Logo" className="h-12 w-auto object-contain sm:h-16" src={dostPcieerdLogo} />
-            <img alt="ADNU MAGIS TBI Logo" className="h-12 w-auto object-contain sm:h-16" src={officeLogo} />
-            {/* <div className="flex flex-col items-center">
-              <span className="text-[32px] font-bold tracking-tighter italic">DOST-PCIEERD</span>
-              <span className="text-[10px] uppercase tracking-widest">Funded TBI</span>
-            </div>
-            <div className="font-heading text-[32px] font-bold">ADNU</div> */}
+            <img alt="ADNU Logo" className="h-12 w-auto object-contain sm:h-16" src={adnuLogo} />
           </div>
         </div>
       </section>
