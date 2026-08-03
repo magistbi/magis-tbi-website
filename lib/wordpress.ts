@@ -13,6 +13,7 @@ import type {
   WordPressGalleryItem,
   WordPressHomepageSnapshot,
   WordPressImage,
+  WordPressPaginatedCollection,
   WordPressPost,
   WordPressStartup,
 } from "@/types/wordpress";
@@ -36,6 +37,46 @@ function asString(value: unknown): string | null {
   return typeof value === "string" && value.trim().length > 0 ? value : null;
 }
 
+const HTML_ENTITY_MAP: Record<string, string> = {
+  amp: "&",
+  apos: "'",
+  gt: ">",
+  hellip: "…",
+  laquo: "«",
+  ldquo: "“",
+  lsquo: "‘",
+  lt: "<",
+  mdash: "—",
+  nbsp: " ",
+  ndash: "–",
+  quot: '"',
+  raquo: "»",
+  rdquo: "”",
+  rsquo: "’",
+};
+
+function decodeHtmlEntities(value: string): string {
+  return value.replace(/&(#x?[0-9a-fA-F]+|[a-zA-Z]+);/g, (match, entity: string) => {
+    if (entity.startsWith("#")) {
+      const codePoint = entity.startsWith("#x") || entity.startsWith("#X")
+        ? Number.parseInt(entity.slice(2), 16)
+        : Number.parseInt(entity.slice(1), 10);
+
+      if (!Number.isFinite(codePoint)) {
+        return match;
+      }
+
+      try {
+        return String.fromCodePoint(codePoint);
+      } catch {
+        return match;
+      }
+    }
+
+    return HTML_ENTITY_MAP[entity.toLowerCase()] ?? match;
+  });
+}
+
 function resolveUrl(rawOrigin: string): URL | null {
   const normalizedOrigin = /^https?:\/\//i.test(rawOrigin) ? rawOrigin : `https://${rawOrigin}`;
 
@@ -51,12 +92,7 @@ function stripHtml(value: string | null | undefined): string {
     return "";
   }
 
-  return value
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&#39;/g, "'")
-    .replace(/&quot;/g, '"')
+  return decodeHtmlEntities(value.replace(/<[^>]*>/g, " "))
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -127,13 +163,6 @@ export function buildWordPressImageUrl(pathname: string, fallbackUrl: string): s
   }
 }
 
-function buildWordPressUrl(
-  endpoint: string,
-  searchParams: Record<string, string | number | boolean | string[] | undefined> = {},
-): string | null {
-  return buildWordPressUrlFromOrigin(resolveWordPressOrigin(), endpoint, searchParams);
-}
-
 function buildWordPressUrlFromOrigin(
   origin: URL | null,
   endpoint: string,
@@ -200,6 +229,18 @@ function readUnknownText(value: unknown): string {
   return "";
 }
 
+function readRenderedHtml(value: unknown): string {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (isRecord(value) && typeof value.rendered === "string") {
+    return value.rendered;
+  }
+
+  return "";
+}
+
 function normalizeAuthor(author: RawWordPressAuthor | undefined): WordPressAuthor | null {
   if (!author) {
     return null;
@@ -225,6 +266,40 @@ function normalizeCategory(category: RawWordPressCategory): WordPressCategory {
 
 function normalizeMedia(media: RawWordPressMedia | undefined): WordPressImage | null {
   return normalizeWordPressImage(media, sanitizeTextField(media?.title));
+}
+
+async function fetchWordPressImageFromHref(
+  href: string,
+  fallbackAlt: string,
+  tags: string[],
+): Promise<WordPressImage | null> {
+  const origin = resolveWordPressOrigin();
+
+  if (!origin) {
+    return null;
+  }
+
+  try {
+    const url = new URL(href, origin);
+    url.searchParams.set("_fields", "id,source_url,alt_text,caption,title,media_details");
+
+    const response = await fetch(url.toString(), {
+      cache: "force-cache",
+      next: {
+        revalidate: WORDPRESS_REVALIDATE_SECONDS,
+        tags,
+      },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const payload = (await response.json()) as unknown;
+    return normalizeWordPressImage(payload, fallbackAlt);
+  } catch {
+    return null;
+  }
 }
 
 function normalizeWordPressImage(media: unknown, fallbackAlt: string): WordPressImage | null {
@@ -274,6 +349,10 @@ function normalizeWordPressImage(media: unknown, fallbackAlt: string): WordPress
 
 function getEmbeddedMedia(embedded: RawWordPressEmbedded | undefined): WordPressImage | null {
   return normalizeMedia(embedded?.["wp:featuredmedia"]?.[0]);
+}
+
+function getFeaturedMediaHref(post: Pick<RawWordPressPost, "_links">): string | null {
+  return asString(post._links?.["wp:featuredmedia"]?.[0]?.href);
 }
 
 function getEmbeddedAuthor(embedded: RawWordPressEmbedded | undefined): WordPressAuthor | null {
@@ -352,21 +431,125 @@ function normalizeStartup(startup: RawWordPressStartup): WordPressStartup {
   };
 }
 
-function normalizePost(post: RawWordPressPost): WordPressPost {
+async function normalizePost(post: RawWordPressPost, tags: string[]): Promise<WordPressPost> {
   const categories = getEmbeddedCategories(post._embedded);
+  const fallbackAlt = sanitizeTextField(post.title);
+  const featuredMedia =
+    getEmbeddedMedia(post._embedded) ??
+    (async () => {
+      const featuredMediaHref = getFeaturedMediaHref(post);
+
+      if (featuredMediaHref) {
+        const media = await fetchWordPressImageFromHref(
+          featuredMediaHref,
+          fallbackAlt,
+          mergeTags(tags, ["wordpress:media"]),
+        );
+
+        if (media) {
+          return media;
+        }
+      }
+
+      const jetpackFeaturedMediaUrl = asString(post.jetpack_featured_media_url);
+
+      return jetpackFeaturedMediaUrl ? normalizeWordPressImage(jetpackFeaturedMediaUrl, fallbackAlt) : null;
+    })();
 
   return {
     id: post.id,
     slug: post.slug,
-    title: sanitizeTextField(post.title),
+    title: fallbackAlt,
     excerpt: sanitizeTextField(post.excerpt) || "Read the latest update from the archive.",
+    content: readRenderedHtml(post.content),
     url: asString(post.link) ?? "",
     date: post.date,
     modified: post.modified,
     author: getEmbeddedAuthor(post._embedded),
     categories,
-    featuredMedia: getEmbeddedMedia(post._embedded),
+    featuredMedia: await featuredMedia,
   };
+}
+
+export async function getPostsPage(
+  page = 1,
+  limit = 12,
+  tags: string[] = ["wordpress", "wordpress:posts"],
+): Promise<WordPressPaginatedCollection<WordPressPost>> {
+  const posts = await fetchWordPressCollectionPage<RawWordPressPost>(
+    resolveWordPressOrigin(),
+    WORDPRESS_CONTENT_TYPES.posts,
+    {
+      per_page: Math.max(limit, 1),
+      page: Math.max(page, 1),
+      _embed: 1,
+      _fields: "id,slug,date,modified,link,title,excerpt,featured_media,jetpack_featured_media_url,_embedded,_links",
+      orderby: "date",
+      order: "desc",
+    },
+    mergeTags(tags),
+  );
+
+  const normalizedPosts = posts
+    ? await Promise.all(posts.items.map((post) => normalizePost(post, tags)))
+    : [];
+
+  return {
+    items: normalizedPosts
+      .sort((left, right) => parseDateValue(right.date) - parseDateValue(left.date))
+      .slice(0, limit),
+    totalPages: posts?.totalPages ?? null,
+  };
+}
+
+export async function getPostBySlug(
+  slug: string,
+  tags: string[] = ["wordpress", "wordpress:posts", "wordpress:article"],
+): Promise<WordPressPost | null> {
+  const posts = await fetchWordPressCollection<RawWordPressPost>(
+    resolveWordPressOrigin(),
+    WORDPRESS_CONTENT_TYPES.posts,
+    {
+      slug,
+      per_page: 1,
+      _embed: 1,
+      _fields:
+        "id,slug,date,modified,link,title,excerpt,content,featured_media,jetpack_featured_media_url,_embedded,_links",
+      status: "publish",
+    },
+    mergeTags(tags, [`wordpress:post:${slug}`]),
+  );
+
+  const post = posts[0];
+
+  return post ? normalizePost(post, tags) : null;
+}
+
+export interface WordPressSitemapPostEntry {
+  slug: string;
+  modified: string;
+}
+
+export async function getPostSitemapEntries(): Promise<WordPressSitemapPostEntry[]> {
+  const posts = await fetchWordPressPagedCollection<RawWordPressPost>(
+    resolveWordPressOrigin(),
+    WORDPRESS_CONTENT_TYPES.posts,
+    {
+      per_page: 100,
+      _fields: "slug,modified,date",
+      orderby: "date",
+      order: "desc",
+      status: "publish",
+    },
+    mergeTags(["wordpress", "wordpress:posts", "wordpress:sitemap"]),
+  );
+
+  return posts
+    .map((post) => ({
+      slug: asString(post.slug) ?? "",
+      modified: asString(post.modified) ?? asString(post.date) ?? "",
+    }))
+    .filter((post): post is WordPressSitemapPostEntry => post.slug.length > 0);
 }
 
 function readEventField(
@@ -545,20 +728,9 @@ async function fetchWordPressPagedCollection<T>(
 }
 
 export async function getLatestPosts(limit = 3): Promise<WordPressPost[]> {
-  const posts = await fetchWordPressCollection<RawWordPressPost>(
-    resolveWordPressOrigin(),
-    WORDPRESS_CONTENT_TYPES.posts,
-    {
-      per_page: Math.max(limit, 1),
-      _embed: 1,
-      _fields: "id,slug,date,modified,link,title,excerpt,featured_media,_embedded",
-      orderby: "date",
-      order: "desc",
-    },
-    mergeTags(["wordpress", "wordpress:posts", "wordpress:homepage"]),
-  );
+  const posts = await getPostsPage(1, limit, ["wordpress", "wordpress:posts", "wordpress:homepage"]);
 
-  return posts.map(normalizePost).sort((left, right) => parseDateValue(right.date) - parseDateValue(left.date)).slice(0, limit);
+  return posts.items.slice(0, limit);
 }
 
 export async function getUpcomingEvents(limit = 3): Promise<WordPressEvent[]> {

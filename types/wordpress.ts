@@ -54,6 +54,33 @@ export interface RawWordPressMedia {
   media_details?: WordPressMediaDetails;
 }
 
+export interface RawWordPressLink {
+  href: string;
+  embeddable?: boolean;
+}
+
+export interface RawWordPressLinks {
+  author?: RawWordPressLink[];
+  collection?: RawWordPressLink[];
+  about?: RawWordPressLink[];
+  self?: RawWordPressLink[];
+  replies?: RawWordPressLink[];
+  "version-history"?: RawWordPressLink[];
+  "predecessor-version"?: RawWordPressLink[];
+  "wp:featuredmedia"?: RawWordPressLink[];
+  "wp:attachment"?: RawWordPressLink[];
+  "wp:term"?: Array<{
+    taxonomy: string;
+    embeddable?: boolean;
+    href: string;
+  }>;
+  curies?: Array<{
+    name: string;
+    href: string;
+    templated: boolean;
+  }>;
+}
+
 export interface RawWordPressEmbedded {
   author?: RawWordPressAuthor[];
   "wp:featuredmedia"?: RawWordPressMedia[];
@@ -71,6 +98,8 @@ export interface RawWordPressBaseContent {
   content?: WordPressRenderedField;
   featured_media?: number;
   _embedded?: RawWordPressEmbedded;
+  _links?: RawWordPressLinks;
+  jetpack_featured_media_url?: string;
 }
 
 export interface RawWordPressPost extends RawWordPressBaseContent {
@@ -145,6 +174,7 @@ export interface WordPressPost {
   slug: string;
   title: string;
   excerpt: string;
+  content: string;
   url: string;
   date: string;
   modified: string;
@@ -191,4 +221,9 @@ export interface WordPressHomepageSnapshot {
   latestPosts: WordPressPost[];
   upcomingEvents: WordPressEvent[];
   galleryHighlights: WordPressGalleryItem[];
+}
+
+export interface WordPressPaginatedCollection<T> {
+  items: T[];
+  totalPages: number | null;
 }

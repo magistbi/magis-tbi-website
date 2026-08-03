@@ -1,10 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
-
+import type { Metadata } from "next";
 import type { ComponentType, ReactNode, SVGProps } from "react";
+import Link from "next/link";
 
 import {
   magisFacilities,
-  magisFooterNotes,
   magisGoals,
   magisIdentity,
   magisLaunchpad,
@@ -14,7 +13,12 @@ import {
   magisTaglines,
   magisValuePoints,
 } from "@/lib/magis-content";
-import { buildWordPressImageUrl, getStartupGraduates } from "@/lib/wordpress";
+import { ArticleCard } from "@/components/articles/article-card";
+import { StructuredData } from "@/components/structured-data";
+import { articlesHref, bookingUrl, facebookPageUrl, linkedinPageUrl } from "@/lib/site-links";
+import { getArticleHref } from "@/lib/articles";
+import { getSiteUrl } from "@/lib/site";
+import { buildWordPressImageUrl, getLatestPosts, getStartupGraduates } from "@/lib/wordpress";
 import type { WordPressStartup } from "@/types/wordpress";
 
 type HighlightCard = {
@@ -102,14 +106,6 @@ function CheckCircleIcon(props: IconProps) {
   );
 }
 
-function FacebookIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2m13 2h-2.5A3.5 3.5 0 0 0 12 8.5V11h-2v3h2v7h3v-7h3v-3h-3V9a1 1 0 0 1 1-1h2V5z" />
-    </SvgIcon>
-  );
-}
-
 function ForestIcon(props: IconProps) {
   return (
     <SvgIcon {...props}>
@@ -131,30 +127,6 @@ function LaptopMacIcon(props: IconProps) {
   return (
     <SvgIcon {...props}>
       <path d="M20 18c1.1 0 1.99-.9 1.99-2L22 5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2H0c0 1.1.9 2 2 2h20c1.1 0 2-.9 2-2zM4 5h16v11H4zm8 14c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1" />
-    </SvgIcon>
-  );
-}
-
-function LinkedInIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-    </SvgIcon>
-  );
-}
-
-function LocationOnIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7m0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5" />
-    </SvgIcon>
-  );
-}
-
-function MailIcon(props: IconProps) {
-  return (
-    <SvgIcon {...props}>
-      <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2m0 4-8 5-8-5V6l8 5 8-5z" />
     </SvgIcon>
   );
 }
@@ -223,6 +195,74 @@ const spaceCards: SpaceCard[] = magisFacilities.slice(0, 3).map((facility, index
   description: facility.summary,
 }));
 
+export const revalidate = 300;
+
+export function generateMetadata(): Metadata {
+  const title = "ADNU MAGIS TBI | Innovation Hub";
+  const description =
+    "ADNU MAGIS TBI is the Ateneo de Naga University technology business incubator for startup growth, mentorship, spaces, and community impact.";
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      title,
+      description,
+      url: "/",
+      siteName: "ADNU MAGIS TBI",
+      type: "website",
+      images: [
+        {
+          url: "/home-of-magis.jpg",
+          width: 1600,
+          height: 900,
+          alt: "ADNU MAGIS TBI home of MAGIS",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/home-of-magis.jpg"],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
+function buildHomepageJsonLd() {
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "ADNU MAGIS TBI",
+      url: getSiteUrl("/"),
+      logo: getSiteUrl("/magis-logo.png"),
+      description: magisIdentity.intro,
+      sameAs: [facebookPageUrl, linkedinPageUrl],
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Naga City",
+        addressRegion: "Camarines Sur",
+        addressCountry: "PH",
+      },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "ADNU MAGIS TBI",
+      url: getSiteUrl("/"),
+      description: magisIdentity.intro,
+    },
+  ];
+}
+
 function StartupLogoCard({
   startup,
   duplicate = false,
@@ -234,7 +274,7 @@ function StartupLogoCard({
     startup.founderNames.length > 0
       ? `Founded by ${startup.founderNames.join(", ")}.`
       : "Founder details available in WordPress.";
-  const tooltip = startup.startupName;
+  const tooltip = founderSummary;
 
   return (
     <figure
@@ -355,14 +395,6 @@ const goalCards: GoalCard[] = [
   },
 ];
 
-const officeLogo = "/magis-logo.png";
-const bookingUrl = "https://app.lapsula.com/book/adnu-magistbi";
-const facebookPageUrl = "https://www.facebook.com/adnu.magis.tbi";
-const linkedinPageUrl = "https://www.linkedin.com/company/ateneo-de-naga-university-magis-technology-business-incubator/";
-const contactEmail = "mailto:magis_tbi@gbox.adnu.edu.ph";
-const googleMapsUrl = "https://maps.app.goo.gl/oq93PHA6haDjyYer6";
-const googleMapsEmbedUrl =
-  "https://www.google.com/maps?q=Ateneo+de+Naga+University,+Naga+City,+Camarines+Sur,+Philippines&output=embed";
 const dostPcieerdLogo = wordPressImageUrl(
   "/wp-content/uploads/2025/02/dost-white.png",
   "https://magistbi.com/wp-content/uploads/2025/02/dost-white.png",
@@ -405,44 +437,14 @@ function RoundedImageCard({
 }
 
 export default async function Home() {
-  const startupGraduates = await getStartupGraduates();
+  const [startupGraduates, latestPosts] = await Promise.all([
+    getStartupGraduates(),
+    getLatestPosts(3),
+  ]);
 
   return (
     <main className="overflow-x-hidden bg-background text-on-surface">
-      <header className="sticky top-0 z-50 border-b border-outline-variant bg-surface/90 shadow-sm backdrop-blur-md">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
-          <a href="#" className="flex min-w-0 items-center gap-2 sm:gap-4">
-            <img
-              alt="ADNU MAGIS TBI Logo"
-              className="h-10 w-10 object-contain sm:h-12 sm:w-12"
-              src={officeLogo}
-            />
-            <span className="min-w-0 whitespace-nowrap font-heading text-[18px] font-bold leading-none text-primary sm:text-[24px]">
-              ADNU MAGIS TBI
-            </span>
-          </a>
-
-          <div className="flex items-center gap-2 sm:gap-4">
-            <a
-              href={bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden font-semibold text-primary hover:opacity-80 lg:block"
-            >
-              Book Facility
-            </a>
-            <a
-              href={facebookPageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-lg bg-secondary-container px-4 py-2 text-sm font-bold text-on-secondary-container shadow-sm transition-all duration-300 hover:scale-95 active:scale-90 sm:px-6 sm:py-2.5 sm:text-base"
-            >
-              Contact Us
-            </a>
-          </div>
-        </div>
-      </header>
-
+      <StructuredData id="home-jsonld" data={buildHomepageJsonLd()} />
       <section className="relative flex min-h-[78svh] items-center overflow-hidden bg-primary py-16 sm:min-h-[85vh] sm:py-0">
         <div className="absolute inset-0 z-0">
           <div
@@ -578,6 +580,48 @@ export default async function Home() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="bg-surface py-14 sm:py-20">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+            <div className="max-w-2xl">
+              <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.28em] text-secondary">
+                Latest updates
+              </p>
+              <h2 className="font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-primary sm:text-[40px] lg:text-[48px]">
+                Latest from the archive
+              </h2>
+              <p className="mt-4 text-[16px] leading-[1.6] text-on-surface-variant sm:text-[18px]">
+                Recent stories, announcements, and startup updates from the WordPress archive.
+              </p>
+            </div>
+            <Link
+              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-[16px] font-bold text-on-primary shadow-sm transition-all hover:bg-tertiary hover:scale-95 sm:px-8 sm:py-4 sm:text-[18px]"
+              href={articlesHref}
+            >
+              View all articles
+            </Link>
+          </div>
+
+          {latestPosts.length > 0 ? (
+            <div className="grid gap-6 lg:grid-cols-3">
+              {latestPosts.map((post) => (
+                <ArticleCard key={post.id} href={getArticleHref(post)} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-[2rem] border border-dashed border-outline-variant bg-white px-6 py-8 text-center text-on-surface-variant shadow-sm sm:px-8 sm:py-10">
+              <p className="font-heading text-[20px] font-semibold leading-[1.3] text-primary sm:text-[24px]">
+                Latest articles will appear here once the WordPress archive is available.
+              </p>
+              <p className="mt-3 text-[15px] leading-[1.6] sm:text-[16px]">
+                The homepage still links to the archive so crawlers and visitors can reach the
+                editorial content hub even when the CMS is empty.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -850,133 +894,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <footer className="bg-primary text-on-primary">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-14 sm:px-6 sm:py-20 md:grid-cols-12 lg:px-8">
-          <div className="md:col-span-5">
-            <div className="mb-5 flex items-center gap-3 sm:mb-6">
-              <img alt="ADNU MAGIS TBI Logo" className="h-9 w-9 object-contain sm:h-10 sm:w-10" src={officeLogo} />
-              <span className="font-heading text-[20px] font-bold leading-[1.3] text-secondary-fixed sm:text-[24px]">
-                ADNU MAGIS TBI
-              </span>
-            </div>
-            <p className="mb-6 max-w-sm text-sm text-surface-variant sm:mb-8 sm:text-base">
-              {magisIdentity.tagline} {magisLocation.supportLine}
-            </p>
-            <div className="flex gap-3">
-              <a
-                href={facebookPageUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
-                aria-label="Facebook"
-              >
-                <FacebookIcon className="size-4" aria-hidden="true" />
-              </a>
-              <a
-                href={linkedinPageUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
-                aria-label="LinkedIn"
-              >
-                <LinkedInIcon className="size-4" aria-hidden="true" />
-              </a>
-              <a
-                href={contactEmail}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
-                aria-label="Email"
-              >
-                <MailIcon className="size-4" aria-hidden="true" />
-              </a>
-            </div>
-          </div>
-
-          <div className="md:col-span-2">
-            <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
-              Platform
-            </h4>
-            <ul className="space-y-3 text-surface-variant sm:space-y-4">
-              <li>
-                <a href="#about" className="transition-colors hover:text-secondary-fixed">
-                  About Us
-                </a>
-              </li>
-              <li>
-                <a href="#cohorts" className="transition-colors hover:text-secondary-fixed">
-                  Startups
-                </a>
-              </li>
-              <li>
-                <a href="#goals" className="transition-colors hover:text-secondary-fixed">
-                  Goals
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className="transition-colors hover:text-secondary-fixed">
-                  Contact
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="md:col-span-2">
-            <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
-              Resources
-            </h4>
-            <ul className="space-y-3 text-surface-variant sm:space-y-4">
-              <li>
-                <a href="#programs" className="transition-colors hover:text-secondary-fixed">
-                  Programs
-                </a>
-              </li>
-              <li>
-                <a href="#facilities" className="transition-colors hover:text-secondary-fixed">
-                  Facilities
-                </a>
-              </li>
-              <li>
-                <a href="#impact" className="transition-colors hover:text-secondary-fixed">
-                  Impact
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div className="md:col-span-3">
-            <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
-              Location
-            </h4>
-            <p className="mb-4 text-sm text-surface-variant sm:text-base">{magisLocation.address}</p>
-            <div className="overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-lg">
-              <iframe
-                src={googleMapsEmbedUrl}
-                title={magisLocation.heading}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="h-28 w-full sm:h-32"
-              />
-              <a
-                href={googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 border-t border-white/10 bg-white/5 px-4 py-3 text-xs font-semibold text-secondary-fixed transition-colors hover:bg-white/10"
-              >
-                <LocationOnIcon className="size-4" aria-hidden="true" />
-                Open in Google Maps
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="border-t border-white/10 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center text-sm text-surface-variant md:flex-row md:text-left">
-            <p>© 2026 ADNU MAGIS TBI. {magisFooterNotes[0]}.</p>
-            <div className="flex gap-6">
-              <span>{magisFooterNotes[1]}</span>
-            </div>
-          </div>
-        </div>
-      </footer>
     </main>
   );
 }
