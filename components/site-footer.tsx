@@ -1,5 +1,7 @@
 import type { ReactNode, SVGProps } from "react";
 
+import { Reveal } from "@/components/motion/reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/stagger-group";
 import {
   contactEmail,
   facebookPageUrl,
@@ -74,110 +76,116 @@ const resourceLinks = [
 export function SiteFooter() {
   return (
     <footer className="bg-primary text-on-primary">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 py-14 sm:px-6 sm:py-20 md:grid-cols-12 lg:px-8">
-        <div className="md:col-span-5">
-          <div className="mb-5 flex items-center gap-3 sm:mb-6">
-            <img alt="ADNU MAGIS TBI Logo" className="h-9 w-9 object-contain sm:h-10 sm:w-10" src={officeLogo} />
-            <span className="font-heading text-[20px] font-bold leading-[1.3] text-secondary-fixed sm:text-[24px]">
-              ADNU MAGIS TBI
-            </span>
-          </div>
-          <p className="mb-6 max-w-sm text-sm text-surface-variant sm:mb-8 sm:text-base">
-            {magisIdentity.tagline} {magisLocation.supportLine}
-          </p>
-          <div className="flex gap-3">
-            <a
-              href={facebookPageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
-              aria-label="Facebook"
-            >
-              <FacebookIcon className="size-4" />
-            </a>
-            <a
-              href={linkedinPageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
-              aria-label="LinkedIn"
-            >
-              <LinkedInIcon className="size-4" />
-            </a>
-            <a
-              href={contactEmail}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
-              aria-label="Email"
-            >
-              <MailIcon className="size-4" />
-            </a>
-          </div>
-        </div>
+      <Reveal as="div" className="mx-auto max-w-7xl" direction="up" tone="calm">
+        <StaggerGroup
+          as="div"
+          className="grid grid-cols-1 gap-8 px-4 py-14 sm:px-6 sm:py-20 md:grid-cols-12 lg:px-8"
+          tone="calm"
+        >
+          <StaggerItem as="div" className="md:col-span-5" tone="calm">
+            <div className="mb-5 flex items-center gap-3 sm:mb-6">
+              <img alt="ADNU MAGIS TBI Logo" className="h-9 w-9 object-contain sm:h-10 sm:w-10" src={officeLogo} />
+              <span className="font-heading text-[20px] font-bold leading-[1.3] text-secondary-fixed sm:text-[24px]">
+                ADNU MAGIS TBI
+              </span>
+            </div>
+            <p className="mb-6 max-w-sm text-sm text-surface-variant sm:mb-8 sm:text-base">
+              {magisIdentity.tagline} {magisLocation.supportLine}
+            </p>
+            <div className="flex gap-3">
+              <a
+                href={facebookPageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
+                aria-label="Facebook"
+              >
+                <FacebookIcon className="size-4" />
+              </a>
+              <a
+                href={linkedinPageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
+                aria-label="LinkedIn"
+              >
+                <LinkedInIcon className="size-4" />
+              </a>
+              <a
+                href={contactEmail}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
+                aria-label="Email"
+              >
+                <MailIcon className="size-4" />
+              </a>
+            </div>
+          </StaggerItem>
 
-        <div className="md:col-span-2">
-          <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
-            Platform
-          </h4>
-          <ul className="space-y-3 text-surface-variant sm:space-y-4">
-            {platformLinks.map((item) => (
-              <li key={item.label}>
-                <a className="transition-colors hover:text-secondary-fixed" href={item.href}>
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <StaggerItem as="div" className="md:col-span-2" tone="calm">
+            <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
+              Platform
+            </h4>
+            <ul className="space-y-3 text-surface-variant sm:space-y-4">
+              {platformLinks.map((item) => (
+                <li key={item.label}>
+                  <a className="transition-colors hover:text-secondary-fixed" href={item.href}>
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </StaggerItem>
 
-        <div className="md:col-span-2">
-          <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
-            Resources
-          </h4>
-          <ul className="space-y-3 text-surface-variant sm:space-y-4">
-            {resourceLinks.map((item) => (
-              <li key={item.label}>
-                <a className="transition-colors hover:text-secondary-fixed" href={item.href}>
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <StaggerItem as="div" className="md:col-span-2" tone="calm">
+            <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
+              Resources
+            </h4>
+            <ul className="space-y-3 text-surface-variant sm:space-y-4">
+              {resourceLinks.map((item) => (
+                <li key={item.label}>
+                  <a className="transition-colors hover:text-secondary-fixed" href={item.href}>
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </StaggerItem>
 
-        <div className="md:col-span-3">
-          <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
-            Location
-          </h4>
-          <p className="mb-4 text-sm text-surface-variant sm:text-base">{magisLocation.address}</p>
-          <div className="overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-lg">
-            <iframe
-              src={googleMapsEmbedUrl}
-              title={magisLocation.heading}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="h-28 w-full sm:h-32"
-            />
-            <a
-              href={googleMapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 border-t border-white/10 bg-white/5 px-4 py-3 text-xs font-semibold text-secondary-fixed transition-colors hover:bg-white/10"
-            >
-              <LocationOnIcon className="size-4" />
-              Open in Google Maps
-            </a>
+          <StaggerItem as="div" className="md:col-span-3" tone="calm">
+            <h4 className="mb-4 text-[13px] font-bold uppercase tracking-widest text-secondary-fixed sm:mb-6 sm:text-[14px]">
+              Location
+            </h4>
+            <p className="mb-4 text-sm text-surface-variant sm:text-base">{magisLocation.address}</p>
+            <div className="overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-lg">
+              <iframe
+                src={googleMapsEmbedUrl}
+                title={magisLocation.heading}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="h-28 w-full sm:h-32"
+              />
+              <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 border-t border-white/10 bg-white/5 px-4 py-3 text-xs font-semibold text-secondary-fixed transition-colors hover:bg-white/10"
+              >
+                <LocationOnIcon className="size-4" />
+                Open in Google Maps
+              </a>
+            </div>
+          </StaggerItem>
+        </StaggerGroup>
+
+        <div className="border-t border-white/10 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center text-sm text-surface-variant md:flex-row md:text-left">
+            <p>© 2026 ADNU MAGIS TBI. {magisFooterNotes[0]}.</p>
+            <div className="flex gap-6">
+              <span>{magisFooterNotes[1]}</span>
+            </div>
           </div>
         </div>
-      </div>
-
-      <div className="border-t border-white/10 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 text-center text-sm text-surface-variant md:flex-row md:text-left">
-          <p>© 2026 ADNU MAGIS TBI. {magisFooterNotes[0]}.</p>
-          <div className="flex gap-6">
-            <span>{magisFooterNotes[1]}</span>
-          </div>
-        </div>
-      </div>
+      </Reveal>
     </footer>
   );
 }

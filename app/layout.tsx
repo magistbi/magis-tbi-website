@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
+import { MotionProvider } from "@/components/motion/motion-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { magisIdentity } from "@/lib/magis-content";
@@ -55,11 +56,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full scroll-smooth antialiased">
       <body className="min-h-screen bg-background font-sans text-foreground">
-        <div className="flex min-h-screen flex-col">
-          <SiteHeader />
-          <div className="flex-1">{children}</div>
-          <SiteFooter />
-        </div>
+        <MotionProvider>
+          <div className="flex min-h-screen flex-col">
+            <SiteHeader />
+            <div className="flex-1">{children}</div>
+            <SiteFooter />
+          </div>
+        </MotionProvider>
         <Analytics />
       </body>
     </html>

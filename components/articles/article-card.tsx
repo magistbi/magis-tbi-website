@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { MotionSurface } from "@/components/motion/motion-surface";
 import { formatArticleDate, getArticleAuthorName, getArticlePrimaryCategory } from "@/lib/articles";
 import { cn } from "@/lib/utils";
 import type { WordPressPost } from "@/types/wordpress";
@@ -77,12 +78,14 @@ export function ArticleCard({ post, href, featured = false, className }: Article
   const formattedDate = formatArticleDate(post.date) || "Recently published";
 
   return (
-    <article
+    <MotionSurface
+      as="article"
       className={cn(
         "group h-full overflow-hidden rounded-[1.75rem] border border-outline-variant/70 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl",
         featured && "lg:min-h-105",
         className,
       )}
+      tone="card"
     >
       <Link
         aria-label={post.title}
@@ -137,6 +140,6 @@ export function ArticleCard({ post, href, featured = false, className }: Article
           </div>
         </div>
       </Link>
-    </article>
+    </MotionSurface>
   );
 }

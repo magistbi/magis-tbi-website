@@ -3,6 +3,12 @@ import type { ComponentType, ReactNode, SVGProps } from "react";
 import Link from "next/link";
 
 import {
+  HeroBackdrop,
+} from "@/components/motion/hero-backdrop";
+import { MotionSurface } from "@/components/motion/motion-surface";
+import { Reveal } from "@/components/motion/reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/stagger-group";
+import {
   magisFacilities,
   magisGoals,
   magisIdentity,
@@ -446,77 +452,82 @@ export default async function Home() {
     <main className="overflow-x-hidden bg-background text-on-surface">
       <StructuredData id="home-jsonld" data={buildHomepageJsonLd()} />
       <section className="relative flex min-h-[78svh] items-center overflow-hidden bg-primary py-16 sm:min-h-[85vh] sm:py-0">
-        <div className="absolute inset-0 z-0">
-          <div
-            className="h-full w-full bg-cover bg-center opacity-40 mix-blend-overlay"
-            style={{
-              backgroundImage: "url('/home-of-magis.jpg')",
-            }}
-          />
-          <div className="absolute inset-0 bg-linear-to-r from-primary via-primary/80 to-transparent" />
-        </div>
+        <HeroBackdrop />
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="max-w-xl sm:max-w-2xl">
-            <h1 className="mb-5 font-heading text-[34px] font-bold leading-[1.08] tracking-[-0.02em] text-on-primary sm:mb-6 sm:text-[48px] lg:text-[56px]">
-              {magisIdentity.title}
-              <br />
-              <span className="text-secondary-container">{magisIdentity.tagline}</span>
-            </h1>
-            <p className="mb-8 max-w-md text-[16px] leading-[1.6] text-on-primary/90 sm:max-w-xl sm:text-[18px]">
-              {magisIdentity.intro} {magisIdentity.acronym} {magisTaglines.join(" ")}
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
-              <a
-                href="#programs"
-                className="flex w-full items-center justify-center rounded-lg bg-secondary-container px-6 py-3 text-[16px] font-bold text-on-secondary-container shadow-lg transition-all hover:bg-secondary-fixed hover:-translate-y-1 sm:w-auto sm:px-8 sm:py-4 sm:text-[18px]"
-              >
-                Explore Programs
-              </a>
-              <a
-                href="#about"
-                className="flex w-full items-center justify-center rounded-lg border-2 border-on-primary px-6 py-3 text-[16px] font-bold text-on-primary transition-all hover:bg-on-primary hover:text-primary sm:w-auto sm:px-8 sm:py-4 sm:text-[18px]"
-              >
-                Learn More
-              </a>
-            </div>
-          </div>
+          <StaggerGroup as="div" className="max-w-xl sm:max-w-2xl" tone="strong" trigger="mount">
+            <StaggerItem as="div" tone="strong">
+              <h1 className="mb-5 font-heading text-[34px] font-bold leading-[1.08] tracking-[-0.02em] text-on-primary sm:mb-6 sm:text-[48px] lg:text-[56px]">
+                {magisIdentity.title}
+                <br />
+                <span className="text-secondary-container">{magisIdentity.tagline}</span>
+              </h1>
+            </StaggerItem>
+            <StaggerItem as="div" tone="strong">
+              <p className="mb-8 max-w-md text-[16px] leading-[1.6] text-on-primary/90 sm:max-w-xl sm:text-[18px]">
+                {magisIdentity.intro} {magisIdentity.acronym} {magisTaglines.join(" ")}
+              </p>
+            </StaggerItem>
+            <StaggerItem as="div" tone="strong">
+              <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+                <MotionSurface as="div" className="w-full sm:w-auto" tone="button">
+                  <a
+                    href="#programs"
+                    className="flex w-full items-center justify-center rounded-lg bg-secondary-container px-6 py-3 text-[16px] font-bold text-on-secondary-container shadow-lg transition-all hover:bg-secondary-fixed hover:-translate-y-1 sm:w-auto sm:px-8 sm:py-4 sm:text-[18px]"
+                  >
+                    Explore Programs
+                  </a>
+                </MotionSurface>
+                <MotionSurface as="div" className="w-full sm:w-auto" tone="button">
+                  <a
+                    href="#about"
+                    className="flex w-full items-center justify-center rounded-lg border-2 border-on-primary px-6 py-3 text-[16px] font-bold text-on-primary transition-all hover:bg-on-primary hover:text-primary sm:w-auto sm:px-8 sm:py-4 sm:text-[18px]"
+                  >
+                    Learn More
+                  </a>
+                </MotionSurface>
+              </div>
+            </StaggerItem>
+          </StaggerGroup>
         </div>
       </section>
 
       <section id="about" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-        <div className="mb-10 text-center sm:mb-16">
+        <Reveal as="div" className="mb-10 text-center sm:mb-16" direction="up">
           <h2 className="mb-4 font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-primary sm:text-[40px] lg:text-[48px]">
             {magisIdentity.aboutTitle}
           </h2>
           <p className="mx-auto max-w-2xl text-[16px] leading-[1.6] text-on-surface-variant sm:text-[18px]">
             {magisIdentity.intro} {magisIdentity.vision} {magisIdentity.mission}
           </p>
-        </div>
+        </Reveal>
 
-        <div id="value" className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <StaggerGroup id="value" as="div" className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {aboutCards.map((card) => (
-            <div
-              key={card.title}
-              className="group rounded-xl border border-outline-variant bg-white p-6 shadow-sm transition-all hover:shadow-md sm:p-8"
-            >
-              <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-lg bg-surface-container-high text-primary transition-colors group-hover:bg-primary group-hover:text-white sm:h-16 sm:w-16">
-                <card.icon className="size-8 sm:size-10" aria-hidden="true" />
-              </div>
-              <h3 className="mb-4 font-heading text-[22px] font-semibold leading-[1.3] text-primary sm:text-[24px]">
-                {card.title}
-              </h3>
-              <p className="mb-6 text-on-surface-variant">{card.description}</p>
-              <a
-                href="#programs"
-                className="flex items-center gap-2 font-bold text-secondary transition-all group-hover:gap-4"
+            <StaggerItem key={card.title} as="div">
+              <MotionSurface
+                as="div"
+                className="group rounded-xl border border-outline-variant bg-white p-6 shadow-sm transition-all hover:shadow-md sm:p-8"
+                tone="card"
               >
-                {card.linkLabel}
-                <ArrowRightIcon className="size-5" aria-hidden="true" />
-              </a>
-            </div>
+                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-lg bg-surface-container-high text-primary transition-colors group-hover:bg-primary group-hover:text-white sm:h-16 sm:w-16">
+                  <card.icon className="size-8 sm:size-10" aria-hidden="true" />
+                </div>
+                <h3 className="mb-4 font-heading text-[22px] font-semibold leading-[1.3] text-primary sm:text-[24px]">
+                  {card.title}
+                </h3>
+                <p className="mb-6 text-on-surface-variant">{card.description}</p>
+                <a
+                  href="#programs"
+                  className="flex items-center gap-2 font-bold text-secondary transition-all group-hover:gap-4"
+                >
+                  {card.linkLabel}
+                  <ArrowRightIcon className="size-5" aria-hidden="true" />
+                </a>
+              </MotionSurface>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
 
       <section id="impact" className="relative overflow-hidden bg-primary py-14 text-on-primary sm:py-20">
@@ -526,7 +537,7 @@ export default async function Home() {
 
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            <div>
+            <Reveal as="div" direction="left" tone="strong">
               <h2 className="mb-5 font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] sm:mb-6 sm:text-[40px] lg:text-[48px]">
                 MAGIS by the Numbers
               </h2>
@@ -539,53 +550,55 @@ export default async function Home() {
                   <MetricCard key={stat.label} {...stat} />
                 ))}
               </div>
-            </div>
+            </Reveal>
 
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="space-y-4 lg:pt-12">
-                <RoundedImageCard
-                  alt="Startup team collaborating"
-                  image={wordPressImageUrl(
-                    "/wp-content/uploads/2026/07/demo-day.jpg",
-                    "https://magistbi.com/wp-content/uploads/2026/07/demo-day.jpg",
-                  )}
-                  className="h-44 border-2 border-white/10 sm:h-64 sm:border-4"
-                />
-                <RoundedImageCard
-                  alt="Pitch competition event"
-                  image={wordPressImageUrl(
-                    "/wp-content/uploads/2026/07/pitch-competition.jpeg",
-                    "https://magistbi.com/wp-content/uploads/2026/07/pitch-competition.jpeg",
-                  )}
-                  className="h-36 border-2 border-white/10 sm:h-48 sm:border-4"
-                />
+            <Reveal as="div" direction="right" tone="strong">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="space-y-4 lg:pt-12">
+                  <RoundedImageCard
+                    alt="Startup team collaborating"
+                    image={wordPressImageUrl(
+                      "/wp-content/uploads/2026/07/demo-day.jpg",
+                      "https://magistbi.com/wp-content/uploads/2026/07/demo-day.jpg",
+                    )}
+                    className="h-44 border-2 border-white/10 sm:h-64 sm:border-4"
+                  />
+                  <RoundedImageCard
+                    alt="Pitch competition event"
+                    image={wordPressImageUrl(
+                      "/wp-content/uploads/2026/07/pitch-competition.jpeg",
+                      "https://magistbi.com/wp-content/uploads/2026/07/pitch-competition.jpeg",
+                    )}
+                    className="h-36 border-2 border-white/10 sm:h-48 sm:border-4"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <RoundedImageCard
+                    alt="Innovation lab workshop"
+                    image={wordPressImageUrl(
+                      "/wp-content/uploads/2026/07/hackathon.jpg",
+                      "https://magistbi.com/wp-content/uploads/2026/07/hackathon.jpg",
+                    )}
+                    className="h-36 border-2 border-white/10 sm:h-48 sm:border-4"
+                  />
+                  <RoundedImageCard
+                    alt="Mentorship session"
+                    image={wordPressImageUrl(
+                      "/wp-content/uploads/2026/07/mentorship.jpg",
+                      "https://magistbi.com/wp-content/uploads/2026/07/mentorship.jpg",
+                    )}
+                    className="h-44 border-2 border-white/10 sm:h-64 sm:border-4"
+                  />
+                </div>
               </div>
-              <div className="space-y-4">
-                <RoundedImageCard
-                  alt="Innovation lab workshop"
-                  image={wordPressImageUrl(
-                    "/wp-content/uploads/2026/07/hackathon.jpg",
-                    "https://magistbi.com/wp-content/uploads/2026/07/hackathon.jpg",
-                  )}
-                  className="h-36 border-2 border-white/10 sm:h-48 sm:border-4"
-                />
-                <RoundedImageCard
-                  alt="Mentorship session"
-                  image={wordPressImageUrl(
-                    "/wp-content/uploads/2026/07/mentorship.jpg",
-                    "https://magistbi.com/wp-content/uploads/2026/07/mentorship.jpg",
-                  )}
-                  className="h-44 border-2 border-white/10 sm:h-64 sm:border-4"
-                />
-              </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
 
       <section className="bg-surface py-14 sm:py-20">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+          <Reveal as="div" className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end" direction="up">
             <div className="max-w-2xl">
               <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.28em] text-secondary">
                 Latest updates
@@ -597,22 +610,26 @@ export default async function Home() {
                 Recent stories, announcements, and startup updates from the WordPress archive.
               </p>
             </div>
-            <Link
-              className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-[16px] font-bold text-on-primary shadow-sm transition-all hover:bg-tertiary hover:scale-95 sm:px-8 sm:py-4 sm:text-[18px]"
-              href={articlesHref}
-            >
-              View all articles
-            </Link>
-          </div>
+            <MotionSurface as="div" tone="button">
+              <Link
+                className="inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-[16px] font-bold text-on-primary shadow-sm transition-all hover:bg-tertiary hover:scale-95 sm:px-8 sm:py-4 sm:text-[18px]"
+                href={articlesHref}
+              >
+                View all articles
+              </Link>
+            </MotionSurface>
+          </Reveal>
 
           {latestPosts.length > 0 ? (
-            <div className="grid gap-6 lg:grid-cols-3">
+            <StaggerGroup as="div" className="grid gap-6 lg:grid-cols-3">
               {latestPosts.map((post) => (
-                <ArticleCard key={post.id} href={getArticleHref(post)} post={post} />
+                <StaggerItem key={post.id} as="div">
+                  <ArticleCard href={getArticleHref(post)} post={post} />
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerGroup>
           ) : (
-            <div className="rounded-[2rem] border border-dashed border-outline-variant bg-white px-6 py-8 text-center text-on-surface-variant shadow-sm sm:px-8 sm:py-10">
+            <Reveal as="div" className="rounded-[2rem] border border-dashed border-outline-variant bg-white px-6 py-8 text-center text-on-surface-variant shadow-sm sm:px-8 sm:py-10">
               <p className="font-heading text-[20px] font-semibold leading-[1.3] text-primary sm:text-[24px]">
                 Latest articles will appear here once the WordPress archive is available.
               </p>
@@ -620,14 +637,14 @@ export default async function Home() {
                 The homepage still links to the archive so crawlers and visitors can reach the
                 editorial content hub even when the CMS is empty.
               </p>
-            </div>
+            </Reveal>
           )}
         </div>
       </section>
 
       <section id="cohorts" className="bg-surface py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end">
+          <Reveal as="div" className="mb-10 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end" direction="up">
             <div className="max-w-2xl">
               <h2 className="mb-4 font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-primary sm:text-[40px] lg:text-[48px]">
                 IGNITE Startup Graduates
@@ -640,14 +657,16 @@ export default async function Home() {
             <div className="rounded-full bg-secondary-container px-3 py-2 text-[11px] font-bold uppercase tracking-[0.28em] text-on-secondary-container sm:px-4 sm:text-[12px]">
               {startupGraduates.length} startups
             </div>
-          </div>
+          </Reveal>
 
-          <StartupCarousel startups={startupGraduates} />
+          <Reveal as="div" direction="up">
+            <StartupCarousel startups={startupGraduates} />
+          </Reveal>
         </div>
       </section>
 
       <section id="programs" className="mx-auto max-w-7xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8">
-        <div className="mb-10 text-center sm:mb-16">
+        <Reveal as="div" className="mb-10 text-center sm:mb-16" direction="up">
           <h2 className="mb-4 font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-primary sm:text-[40px] lg:text-[48px]">
             Programs &amp; Services
           </h2>
@@ -656,63 +675,74 @@ export default async function Home() {
             operations.
           </p>
           <div className="mx-auto mt-4 h-1 w-24 bg-secondary-container sm:mt-6" />
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
-          <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-6 sm:p-8 lg:col-span-8 lg:p-10">
+          <Reveal
+            as="div"
+            className="rounded-2xl border border-outline-variant bg-surface-container-low p-6 sm:p-8 lg:col-span-8 lg:p-10"
+            direction="left"
+          >
             <h3 className="mb-6 border-l-4 border-secondary pl-4 font-heading text-[22px] font-semibold leading-[1.3] text-primary sm:mb-8 sm:text-[24px]">
               Magis Core Programs
             </h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6 lg:gap-8">
+            <StaggerGroup as="div" className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6 lg:gap-8" tone="default">
               {programCards.map((card) => (
-                <div
-                  key={card.title}
-                  className="rounded-xl border-t-4 border-secondary-container bg-white p-5 shadow-sm sm:p-6"
-                >
-                  <h4 className="mb-2 flex items-center gap-2 font-bold text-primary">
-                    <card.icon className="size-4" aria-hidden="true" />
-                    {card.title}
-                  </h4>
-                  <p className="text-sm text-on-surface-variant">{card.description}</p>
-                  <a
-                    href="#contact"
-                    className="mt-4 inline-flex items-center gap-2 font-bold text-secondary transition-all hover:gap-4"
+                <StaggerItem key={card.title} as="div">
+                  <MotionSurface
+                    as="div"
+                    className="rounded-xl border-t-4 border-secondary-container bg-white p-5 shadow-sm sm:p-6"
+                    tone="card"
                   >
-                    {card.linkLabel}
-                    <ArrowRightIcon className="size-5" aria-hidden="true" />
-                  </a>
-                </div>
+                    <h4 className="mb-2 flex items-center gap-2 font-bold text-primary">
+                      <card.icon className="size-4" aria-hidden="true" />
+                      {card.title}
+                    </h4>
+                    <p className="text-sm text-on-surface-variant">{card.description}</p>
+                    <a
+                      href="#contact"
+                      className="mt-4 inline-flex items-center gap-2 font-bold text-secondary transition-all hover:gap-4"
+                    >
+                      {card.linkLabel}
+                      <ArrowRightIcon className="size-5" aria-hidden="true" />
+                    </a>
+                  </MotionSurface>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerGroup>
 
             <h3 className="mb-6 mt-10 border-l-4 border-secondary pl-4 font-heading text-[22px] font-semibold leading-[1.3] text-primary sm:mb-8 sm:mt-12 sm:text-[24px]">
               Mentorship &amp; Support
             </h3>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6 lg:gap-8">
-              <div className="rounded-xl border-t-4 border-primary/20 bg-white p-5 shadow-sm sm:p-6">
-                <h4 className="mb-2 flex items-center gap-2 font-bold text-primary">
-                  <GroupsIcon className="size-4" aria-hidden="true" />
-                  One-on-One Consultations
-                </h4>
-                <p className="text-sm text-on-surface-variant">
-                  Expert consultations and strategic business mentorship.
-                </p>
-              </div>
-              <div className="rounded-xl border-t-4 border-secondary-container bg-white p-5 shadow-sm sm:p-6">
-                <h4 className="mb-2 flex items-center gap-2 font-bold text-primary">
-                  <ApartmentIcon className="size-4" aria-hidden="true" />
-                  Core Business Services
-                </h4>
-                <p className="text-sm text-on-surface-variant">
-                  Accounting, finance, legal assistance, virtual office access, and business permit
-                  processing.
-                </p>
-              </div>
-            </div>
-          </div>
+            <StaggerGroup as="div" className="grid grid-cols-1 gap-4 md:grid-cols-2 sm:gap-6 lg:gap-8" tone="calm">
+              <StaggerItem as="div" tone="calm">
+                <MotionSurface as="div" className="rounded-xl border-t-4 border-primary/20 bg-white p-5 shadow-sm sm:p-6" tone="card">
+                  <h4 className="mb-2 flex items-center gap-2 font-bold text-primary">
+                    <GroupsIcon className="size-4" aria-hidden="true" />
+                    One-on-One Consultations
+                  </h4>
+                  <p className="text-sm text-on-surface-variant">
+                    Expert consultations and strategic business mentorship.
+                  </p>
+                </MotionSurface>
+              </StaggerItem>
+              <StaggerItem as="div" tone="calm">
+                <MotionSurface as="div" className="rounded-xl border-t-4 border-secondary-container bg-white p-5 shadow-sm sm:p-6" tone="card">
+                  <h4 className="mb-2 flex items-center gap-2 font-bold text-primary">
+                    <ApartmentIcon className="size-4" aria-hidden="true" />
+                    Core Business Services
+                  </h4>
+                  <p className="text-sm text-on-surface-variant">
+                    Accounting, finance, legal assistance, virtual office access, and business permit
+                    processing.
+                  </p>
+                </MotionSurface>
+              </StaggerItem>
+            </StaggerGroup>
+          </Reveal>
 
-          <div className="space-y-6 lg:col-span-4 sm:space-y-8">
-            <div className="rounded-2xl bg-primary p-6 text-on-primary shadow-lg sm:p-8">
+          <Reveal as="div" className="space-y-6 lg:col-span-4 sm:space-y-8" direction="right">
+            <MotionSurface as="div" className="rounded-2xl bg-primary p-6 text-on-primary shadow-lg sm:p-8" tone="card">
               <h3 className="mb-5 font-heading text-[22px] font-semibold leading-[1.3] sm:mb-6 sm:text-[24px]">
                 Business Support
               </h3>
@@ -724,9 +754,9 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </MotionSurface>
 
-            <div className="rounded-2xl bg-secondary-container p-6 text-primary shadow-md sm:p-8">
+            <MotionSurface as="div" className="rounded-2xl bg-secondary-container p-6 text-primary shadow-md sm:p-8" tone="card">
               <h3 className="mb-4 font-heading text-[22px] font-semibold leading-[1.3] sm:text-[24px]">
                 Facilities &amp; Spaces
               </h3>
@@ -750,14 +780,14 @@ export default async function Home() {
                   <span className="font-bold">{item}</span>
                 </div>
               ))}
-            </div>
-          </div>
+            </MotionSurface>
+          </Reveal>
         </div>
       </section>
 
       <section id="facilities" className="bg-surface py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end">
+          <Reveal as="div" className="mb-10 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end" direction="up">
             <div className="max-w-xl">
               <h2 className="mb-4 font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-primary sm:text-[40px] lg:text-[48px]">
                 Facilities &amp; Spaces
@@ -767,83 +797,90 @@ export default async function Home() {
                 your next move.
               </p>
             </div>
-            <a
-              href={bookingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-bold text-on-primary transition-all hover:bg-tertiary sm:w-auto sm:px-8 sm:py-3.5 sm:text-base"
-            >
-              Book a Space
-              <CalendarMonthIcon className="size-5" aria-hidden="true" />
-            </a>
-          </div>
+            <MotionSurface as="div" className="w-full sm:w-auto" tone="button">
+              <a
+                href={bookingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-bold text-on-primary transition-all hover:bg-tertiary sm:w-auto sm:px-8 sm:py-3.5 sm:text-base"
+              >
+                Book a Space
+                <CalendarMonthIcon className="size-5" aria-hidden="true" />
+              </a>
+            </MotionSurface>
+          </Reveal>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 sm:gap-8">
+          <StaggerGroup as="div" className="grid grid-cols-1 gap-6 md:grid-cols-3 sm:gap-8">
             {spaceCards.map((space) => (
-              <div key={space.title} className="group overflow-hidden rounded-xl bg-white shadow-sm">
-                <div className="relative h-44 overflow-hidden sm:h-56 md:h-64">
-                  <img
-                    alt={space.title}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    src={space.image}
-                  />
-                  <div className="absolute left-4 top-4 rounded bg-primary px-3 py-1 text-[12px] font-bold text-on-primary sm:text-[14px]">
-                    {space.badge}
+              <StaggerItem key={space.title} as="div">
+                <MotionSurface as="div" className="group overflow-hidden rounded-xl bg-white shadow-sm" tone="card">
+                  <div className="relative h-44 overflow-hidden sm:h-56 md:h-64">
+                    <img
+                      alt={space.title}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      src={space.image}
+                    />
+                    <div className="absolute left-4 top-4 rounded bg-primary px-3 py-1 text-[12px] font-bold text-on-primary sm:text-[14px]">
+                      {space.badge}
+                    </div>
                   </div>
-                </div>
-                <div className="p-6 sm:p-8">
-                  <div className="mb-4 flex items-center gap-2 text-secondary">
-                    <space.icon className="size-5" aria-hidden="true" />
-                    <span className="text-[12px] font-bold uppercase tracking-wider">
-                      {space.label}
-                    </span>
+                  <div className="p-6 sm:p-8">
+                    <div className="mb-4 flex items-center gap-2 text-secondary">
+                      <space.icon className="size-5" aria-hidden="true" />
+                      <span className="text-[12px] font-bold uppercase tracking-wider">
+                        {space.label}
+                      </span>
+                    </div>
+                    <h3 className="mb-3 font-heading text-[22px] font-semibold leading-[1.3] text-primary sm:text-[24px]">
+                      {space.title}
+                    </h3>
+                    <p className="text-on-surface-variant">{space.description}</p>
                   </div>
-                  <h3 className="mb-3 font-heading text-[22px] font-semibold leading-[1.3] text-primary sm:text-[24px]">
-                    {space.title}
-                  </h3>
-                  <p className="text-on-surface-variant">{space.description}</p>
-                </div>
-              </div>
+                </MotionSurface>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerGroup>
         </div>
       </section>
 
       <section id="goals" className="bg-surface-container-lowest py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center sm:gap-6 md:mb-12">
+          <Reveal as="div" className="mb-10 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center sm:gap-6 md:mb-12" direction="up">
             <h2 className="font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-primary sm:text-[40px] lg:text-[48px]">
               Our Goals
             </h2>
             <a href="#contact" className="text-sm font-bold text-primary hover:underline">
               Learn More
             </a>
-          </div>
+          </Reveal>
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 sm:gap-6">
+          <StaggerGroup as="div" className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 sm:gap-6">
             {goalCards.map((goal) => (
-              <div
-                key={goal.title}
-                className="flex flex-col overflow-hidden rounded-xl border border-outline-variant bg-white shadow-sm transition-all md:hover:-translate-y-2"
-              >
-                <div className="h-40 overflow-hidden sm:h-48">
-                  <img alt={goal.title} className="h-full w-full object-cover" src={goal.image} />
-                </div>
-                <div className="p-5 sm:p-6">
-                  <div className="mb-2 text-[13px] font-bold uppercase text-secondary sm:text-[14px]">
-                    {goal.category}
+              <StaggerItem key={goal.title} as="div">
+                <MotionSurface
+                  as="div"
+                  className="flex flex-col overflow-hidden rounded-xl border border-outline-variant bg-white shadow-sm transition-all md:hover:-translate-y-2"
+                  tone="card"
+                >
+                  <div className="h-40 overflow-hidden sm:h-48">
+                    <img alt={goal.title} className="h-full w-full object-cover" src={goal.image} />
                   </div>
-                  <h4 className="mb-4 font-bold text-primary">{goal.title}</h4>
-                  <p className="line-clamp-2 text-sm text-on-surface-variant">{goal.description}</p>
-                </div>
-              </div>
+                  <div className="p-5 sm:p-6">
+                    <div className="mb-2 text-[13px] font-bold uppercase text-secondary sm:text-[14px]">
+                      {goal.category}
+                    </div>
+                    <h4 className="mb-4 font-bold text-primary">{goal.title}</h4>
+                    <p className="line-clamp-2 text-sm text-on-surface-variant">{goal.description}</p>
+                  </div>
+                </MotionSurface>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerGroup>
         </div>
       </section>
 
       <section className="bg-primary py-14 text-on-primary sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+        <Reveal as="div" className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8" direction="up" tone="calm">
           <h3 className="mb-6 text-[12px] font-semibold uppercase tracking-widest text-on-primary/60 sm:mb-8">
             Supported by
           </h3>
@@ -851,7 +888,7 @@ export default async function Home() {
             <img alt="DOST PCIEERD Logo" className="h-12 w-auto object-contain sm:h-16" src={dostPcieerdLogo} />
             <img alt="ADNU Logo" className="h-12 w-auto object-contain sm:h-16" src={adnuLogo} />
           </div>
-        </div>
+        </Reveal>
       </section>
 
       <section id="contact" className="relative overflow-hidden py-14 sm:py-20">
@@ -866,32 +903,46 @@ export default async function Home() {
           <div className="absolute inset-0 bg-primary/80 backdrop-blur-sm" />
         </div>
 
-        <div className="relative z-10 mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="mb-5 font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-on-primary sm:mb-6 sm:text-[40px] lg:text-[48px]">
-            {magisLaunchpad.title}
-          </h2>
-          <p className="mb-8 text-[16px] leading-[1.6] text-on-primary/80 sm:mb-10 sm:text-[18px]">
-            {magisLaunchpad.summary}
-          </p>
-          <div className="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
-            <a
-              href={facebookPageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex w-full items-center justify-center rounded-lg bg-secondary-container px-6 py-3 text-[16px] font-bold text-on-secondary-container shadow-xl transition-all hover:scale-105 sm:w-auto sm:px-10 sm:py-4 sm:text-[18px]"
-            >
-              Apply Now
-            </a>
-            <a
-              href={facebookPageUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex w-full items-center justify-center rounded-lg bg-white px-6 py-3 text-[16px] font-bold text-primary shadow-xl transition-all hover:scale-105 sm:w-auto sm:px-10 sm:py-4 sm:text-[18px]"
-            >
-              Contact Us
-            </a>
-          </div>
-        </div>
+        <StaggerGroup
+          as="div"
+          className="relative z-10 mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8"
+          tone="strong"
+        >
+          <StaggerItem as="div" tone="strong">
+            <h2 className="mb-5 font-heading text-[32px] font-bold leading-[1.1] tracking-[-0.02em] text-on-primary sm:mb-6 sm:text-[40px] lg:text-[48px]">
+              {magisLaunchpad.title}
+            </h2>
+          </StaggerItem>
+          <StaggerItem as="div" tone="strong">
+            <p className="mb-8 text-[16px] leading-[1.6] text-on-primary/80 sm:mb-10 sm:text-[18px]">
+              {magisLaunchpad.summary}
+            </p>
+          </StaggerItem>
+          <StaggerItem as="div" tone="strong">
+            <div className="flex flex-col justify-center gap-3 sm:flex-row sm:gap-4">
+              <MotionSurface as="div" className="w-full sm:w-auto" tone="button">
+                <a
+                  href={facebookPageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center justify-center rounded-lg bg-secondary-container px-6 py-3 text-[16px] font-bold text-on-secondary-container shadow-xl transition-all hover:scale-105 sm:w-auto sm:px-10 sm:py-4 sm:text-[18px]"
+                >
+                  Apply Now
+                </a>
+              </MotionSurface>
+              <MotionSurface as="div" className="w-full sm:w-auto" tone="button">
+                <a
+                  href={facebookPageUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center justify-center rounded-lg bg-white px-6 py-3 text-[16px] font-bold text-primary shadow-xl transition-all hover:scale-105 sm:w-auto sm:px-10 sm:py-4 sm:text-[18px]"
+                >
+                  Contact Us
+                </a>
+              </MotionSurface>
+            </div>
+          </StaggerItem>
+        </StaggerGroup>
       </section>
 
     </main>

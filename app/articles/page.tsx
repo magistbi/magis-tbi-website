@@ -3,6 +3,9 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 
 import { ArticleCard } from "@/components/articles/article-card";
+import { MotionSurface } from "@/components/motion/motion-surface";
+import { Reveal } from "@/components/motion/reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/stagger-group";
 import { StructuredData } from "@/components/structured-data";
 import { getArticleHref, getArticlesPageHref } from "@/lib/articles";
 import { getSiteUrl } from "@/lib/site";
@@ -202,7 +205,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
         {featuredPost ? (
           <section className="space-y-5">
-            <div className="flex flex-wrap items-end justify-between gap-3">
+            <Reveal as="div" className="flex flex-wrap items-end justify-between gap-3" direction="up">
               <div className="space-y-1">
                 <p className="text-xs font-semibold uppercase tracking-[0.28em] text-secondary">
                   Featured story
@@ -216,14 +219,16 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                   Page {currentPage} of {totalPages}
                 </p>
               ) : null}
-            </div>
+            </Reveal>
 
-            <ArticleCard featured href={getArticleHref(featuredPost)} post={featuredPost} />
+            <Reveal as="div" direction="up" tone="strong">
+              <ArticleCard featured href={getArticleHref(featuredPost)} post={featuredPost} />
+            </Reveal>
           </section>
         ) : null}
 
         <section className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <Reveal as="div" className="flex flex-wrap items-center justify-between gap-3" direction="up">
             <div className="space-y-1">
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-secondary">
                 Archive
@@ -237,17 +242,19 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                 Showing {archivePosts.length} additional article{archivePosts.length === 1 ? "" : "s"}
               </p>
             ) : null}
-          </div>
+          </Reveal>
 
           {posts.length > 0 ? (
             archivePosts.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              <StaggerGroup as="div" className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {archivePosts.map((post) => (
-                  <ArticleCard key={post.id} href={getArticleHref(post)} post={post} />
+                  <StaggerItem key={post.id} as="div">
+                    <ArticleCard href={getArticleHref(post)} post={post} />
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerGroup>
             ) : (
-              <div className="rounded-[1.75rem] border border-dashed border-outline-variant/70 bg-white p-8 text-center shadow-sm">
+              <Reveal as="div" className="rounded-[1.75rem] border border-dashed border-outline-variant/70 bg-white p-8 text-center shadow-sm">
                 <p className="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
                   No additional stories
                 </p>
@@ -255,10 +262,10 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                   This page only has one post right now. More articles will appear here as the CMS
                   fills out.
                 </p>
-              </div>
+              </Reveal>
             )
           ) : (
-            <div className="rounded-[1.75rem] border border-dashed border-outline-variant/70 bg-white p-8 text-center shadow-sm">
+            <Reveal as="div" className="rounded-[1.75rem] border border-dashed border-outline-variant/70 bg-white p-8 text-center shadow-sm">
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
                 No articles yet
               </p>
@@ -267,21 +274,25 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
                 archive grid will populate automatically without any code changes.
               </p>
               <div className="mt-6">
-                <Link
-                  className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
-                  href="/"
-                >
-                  Back to home
-                </Link>
+                <MotionSurface as="div" className="inline-flex" tone="button">
+                  <Link
+                    className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
+                    href="/"
+                  >
+                    Back to home
+                  </Link>
+                </MotionSurface>
               </div>
-            </div>
+            </Reveal>
           )}
         </section>
 
         {paginationItems.length > 0 && totalPages ? (
-          <nav
+          <Reveal
+            as="nav"
             aria-label="Articles pagination"
             className="flex flex-wrap items-center justify-center gap-2 pt-2"
+            direction="up"
           >
             <PaginationLink
               href={getArticlesPageHref(currentPage - 1)}
@@ -316,7 +327,7 @@ export default async function ArticlesPage({ searchParams }: ArticlesPageProps) 
             >
               Next
             </PaginationLink>
-          </nav>
+          </Reveal>
         ) : null}
       </div>
     </main>

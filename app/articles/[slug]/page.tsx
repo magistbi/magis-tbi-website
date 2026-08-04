@@ -3,6 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 
+import { MotionSurface } from "@/components/motion/motion-surface";
+import { Reveal } from "@/components/motion/reveal";
+import { StaggerGroup, StaggerItem } from "@/components/motion/stagger-group";
 import { StructuredData } from "@/components/structured-data";
 import { formatArticleDate, getArticleAuthorName, getArticlePrimaryCategory } from "@/lib/articles";
 import { articlesHref } from "@/lib/site-links";
@@ -235,69 +238,86 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
       <div className="absolute inset-x-0 top-0 -z-10 h-128 bg-[radial-gradient(circle_at_top_left,rgba(255,199,44,0.16),transparent_35%),radial-gradient(circle_at_top_right,rgba(0,26,72,0.12),transparent_34%),linear-gradient(180deg,rgba(229,238,255,0.92),rgba(248,249,255,0))]" />
 
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
-        <Link
-          className="inline-flex w-fit items-center gap-2 rounded-full border border-outline-variant/70 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary hover:text-secondary"
-          href={articlesHref}
-        >
-          <span aria-hidden="true">←</span>
-          Back to archive
-        </Link>
+        <Reveal as="div" direction="up" tone="calm" trigger="mount">
+          <MotionSurface as="div" className="inline-flex" tone="subtle">
+            <Link
+              className="inline-flex w-fit items-center gap-2 rounded-full border border-outline-variant/70 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary hover:text-secondary"
+              href={articlesHref}
+            >
+              <span aria-hidden="true">←</span>
+              Back to archive
+            </Link>
+          </MotionSurface>
+        </Reveal>
 
         <article className="overflow-hidden rounded-[2rem] border border-outline-variant/70 bg-white shadow-sm">
           <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
-            <div className="flex flex-col gap-6 p-6 sm:p-8 lg:p-10">
-              <div className="flex flex-wrap items-center gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-secondary">
-                <span>{categoryName}</span>
-                <span aria-hidden="true" className="text-outline-variant">
-                  ·
-                </span>
-                <time dateTime={post.date}>{formattedDate}</time>
-              </div>
+            <StaggerGroup
+              as="div"
+              className="flex flex-col gap-6 p-6 sm:p-8 lg:p-10"
+              tone="calm"
+              trigger="mount"
+            >
+              <StaggerItem as="div" direction="up" tone="calm">
+                <div className="flex flex-wrap items-center gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-secondary">
+                  <span>{categoryName}</span>
+                  <span aria-hidden="true" className="text-outline-variant">
+                    ·
+                  </span>
+                  <time dateTime={post.date}>{formattedDate}</time>
+                </div>
+              </StaggerItem>
 
-              <div className="space-y-4">
-                <h1 className="max-w-3xl font-heading text-[clamp(2.2rem,5vw,4.25rem)] leading-[1.02] tracking-[-0.04em] text-primary">
-                  {post.title}
-                </h1>
-                <p className="max-w-3xl text-lg leading-8 text-on-surface-variant sm:text-xl">
-                  {articleDescription}
-                </p>
-              </div>
+              <StaggerItem as="div" direction="up" tone="calm">
+                <div className="space-y-4">
+                  <h1 className="max-w-3xl font-heading text-[clamp(2.2rem,5vw,4.25rem)] leading-[1.02] tracking-[-0.04em] text-primary">
+                    {post.title}
+                  </h1>
+                  <p className="max-w-3xl text-lg leading-8 text-on-surface-variant sm:text-xl">
+                    {articleDescription}
+                  </p>
+                </div>
+              </StaggerItem>
 
-              <div className="flex flex-wrap items-center gap-4 border-t border-outline-variant/60 pt-5">
-                <div className="flex items-center gap-3">
-                  {post.author?.avatarUrl ? (
-                    <img
-                      alt={authorName}
-                      className="h-12 w-12 rounded-full border border-outline-variant/50 object-cover"
-                      decoding="async"
-                      loading="lazy"
-                      src={post.author.avatarUrl}
-                    />
-                  ) : (
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-outline-variant/50 bg-primary/10 text-sm font-semibold text-primary">
-                      {authorName.slice(0, 1).toUpperCase()}
+              <StaggerItem as="div" direction="up" tone="calm">
+                <div className="flex flex-wrap items-center gap-4 border-t border-outline-variant/60 pt-5">
+                  <div className="flex items-center gap-3">
+                    {post.author?.avatarUrl ? (
+                      <img
+                        alt={authorName}
+                        className="h-12 w-12 rounded-full border border-outline-variant/50 object-cover"
+                        decoding="async"
+                        loading="lazy"
+                        src={post.author.avatarUrl}
+                      />
+                    ) : (
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-outline-variant/50 bg-primary/10 text-sm font-semibold text-primary">
+                        {authorName.slice(0, 1).toUpperCase()}
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-secondary">
+                        Written by
+                      </p>
+                      <p className="text-sm font-semibold text-primary">{authorName}</p>
                     </div>
-                  )}
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-secondary">
-                      Written by
-                    </p>
-                    <p className="text-sm font-semibold text-primary">{authorName}</p>
                   </div>
                 </div>
-              </div>
-            </div>
+              </StaggerItem>
+            </StaggerGroup>
 
-            <ArticleHeroMedia
-              category={categoryName}
-              imageAlt={heroImageAlt}
-              imageUrl={heroImage}
-              title={post.title}
-            />
+            <Reveal as="div" className="lg:h-full" direction="right" tone="calm" trigger="mount">
+              <ArticleHeroMedia
+                category={categoryName}
+                imageAlt={heroImageAlt}
+                imageUrl={heroImage}
+                title={post.title}
+              />
+            </Reveal>
           </div>
 
           <div className="border-t border-outline-variant/60 px-6 py-8 sm:px-8 lg:px-10">
-            <div className={cn("max-w-3xl", !hasContent && "space-y-4")}>
+            <Reveal as="div" className={cn("max-w-3xl", !hasContent && "space-y-4")} direction="up" tone="calm">
               {hasContent ? (
                 <div
                   className="article-content"
@@ -314,7 +334,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
                   </p>
                 </div>
               )}
-            </div>
+            </Reveal>
           </div>
         </article>
       </div>
