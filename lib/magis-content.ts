@@ -67,7 +67,7 @@ export const magisAcronym: AcronymItem[] = [
 ];
 
 export const magisIdentity = {
-  title: "ADNU MAGIS Technology Business Incubator",
+  title: "ADNU MAGIS TBI",
   aboutTitle: "About MAGIS TBI",
   intro:
     "ADNU - MAGIS TBI is a university-owned and operated technology business incubator serving technology-focused or technology-utilizing growth-oriented startups.",

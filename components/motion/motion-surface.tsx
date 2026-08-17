@@ -21,16 +21,16 @@ type MotionSurfaceProps = {
 
 const surfaceStates = {
   button: {
-    hover: { scale: 1.02, y: -4 },
-    tap: { scale: 0.985, y: -1 },
+    hover: { scale: 1.01, y: -1 },
+    tap: { scale: 0.99, y: 0 },
   },
   card: {
-    hover: { scale: 1.01, y: -8 },
-    tap: { scale: 0.992, y: -2 },
+    hover: { scale: 1.005, y: -4 },
+    tap: { scale: 0.996, y: -1 },
   },
   subtle: {
-    hover: { scale: 1.005, y: -2 },
-    tap: { scale: 0.995, y: 0 },
+    hover: { scale: 1.002, y: -1 },
+    tap: { scale: 0.998, y: 0 },
   },
 } as const;
 

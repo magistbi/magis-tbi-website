@@ -25,6 +25,20 @@ import {
 } from "@/lib/events";
 
 export const WORDPRESS_REVALIDATE_SECONDS = 300;
+export const WORDPRESS_REVALIDATION_TAGS = [
+  "wordpress",
+  "wordpress:posts",
+  "wordpress:events",
+  "wordpress:homepage",
+  "wordpress:articles",
+  "wordpress:catalog",
+  "wordpress:sitemap",
+  "wordpress:media",
+  "wordpress:gallery",
+  "wordpress:startups",
+  "wordpress:article",
+  "wordpress:event",
+] as const;
 
 const WORDPRESS_CONTENT_TYPES = {
   posts: "posts",

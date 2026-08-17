@@ -76,11 +76,12 @@ const resourceLinks = [
 
 export function SiteFooter() {
   return (
-    <footer className="bg-primary text-on-primary">
+    <footer className="relative overflow-hidden bg-[linear-gradient(180deg,#001a48_0%,#001233_100%)] text-on-primary">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,199,44,0.12),transparent_24%),radial-gradient(circle_at_left_bottom,rgba(177,197,255,0.12),transparent_28%)]" />
       <Reveal as="div" className="mx-auto max-w-7xl" direction="up" tone="calm">
         <StaggerGroup
           as="div"
-          className="grid grid-cols-1 gap-8 px-4 py-14 sm:px-6 sm:py-20 md:grid-cols-12 lg:px-8"
+          className="relative grid grid-cols-1 gap-8 px-4 py-16 sm:px-6 sm:py-20 md:grid-cols-12 lg:px-8"
           tone="calm"
         >
           <StaggerItem as="div" className="md:col-span-5" tone="calm">
@@ -98,7 +99,7 @@ export function SiteFooter() {
                 href={facebookPageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/18 bg-white/5 transition-all hover:bg-secondary-container hover:text-on-secondary-container"
                 aria-label="Facebook"
               >
                 <FacebookIcon className="size-4" />
@@ -107,14 +108,14 @@ export function SiteFooter() {
                 href={linkedinPageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/18 bg-white/5 transition-all hover:bg-secondary-container hover:text-on-secondary-container"
                 aria-label="LinkedIn"
               >
                 <LinkedInIcon className="size-4" />
               </a>
               <a
                 href={contactEmail}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 transition-all hover:bg-secondary-fixed hover:text-primary"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/18 bg-white/5 transition-all hover:bg-secondary-container hover:text-on-secondary-container"
                 aria-label="Email"
               >
                 <MailIcon className="size-4" />
@@ -157,7 +158,7 @@ export function SiteFooter() {
               Location
             </h4>
             <p className="mb-4 text-sm text-surface-variant sm:text-base">{magisLocation.address}</p>
-            <div className="overflow-hidden rounded-lg border border-white/10 bg-white/5 shadow-lg">
+            <div className="overflow-hidden rounded-lg border border-white/10 bg-white/6 shadow-[0_16px_36px_rgba(0,0,0,0.22)]">
               <iframe
                 src={googleMapsEmbedUrl}
                 title={magisLocation.heading}
@@ -169,7 +170,7 @@ export function SiteFooter() {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 border-t border-white/10 bg-white/5 px-4 py-3 text-xs font-semibold text-secondary-fixed transition-colors hover:bg-white/10"
+                className="flex items-center justify-center gap-2 border-t border-white/10 bg-white/6 px-4 py-3 text-xs font-semibold text-secondary-fixed transition-colors hover:bg-white/10"
               >
                 <LocationOnIcon className="size-4" />
                 Open in Google Maps

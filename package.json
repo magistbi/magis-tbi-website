@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "npm run test:events",
+    "test:events": "node tests/events-classification.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

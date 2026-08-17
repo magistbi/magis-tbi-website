@@ -149,8 +149,10 @@ export function isUpcomingEvent(event: Pick<WordPressEvent, "startDate">): boole
   return parseEventDateValue(event.startDate) >= getManilaStartOfDayTimestamp();
 }
 
-export function isPastEvent(event: Pick<WordPressEvent, "status">): boolean {
-  return isClosedEvent(event);
+export function isPastEvent(event: Pick<WordPressEvent, "status" | "startDate">): boolean {
+  const startDateValue = parseEventDateValue(event.startDate);
+
+  return isClosedEvent(event) || (startDateValue > 0 && startDateValue < getManilaStartOfDayTimestamp());
 }
 
 function getManilaStartOfDayTimestamp(date = new Date()): number {
