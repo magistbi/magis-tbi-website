@@ -17,6 +17,12 @@ import type {
   WordPressPost,
   WordPressStartup,
 } from "@/types/wordpress";
+import {
+  isUpcomingEvent,
+  normalizeEventCategory,
+  sortEventsByStartDateAsc,
+  sortEventsByStartDateDesc,
+} from "@/lib/events";
 
 export const WORDPRESS_REVALIDATE_SECONDS = 300;
 
@@ -555,30 +561,151 @@ export async function getPostSitemapEntries(): Promise<WordPressSitemapPostEntry
 function readEventField(
   event: RawWordPressEvent,
   key: keyof NonNullable<RawWordPressEvent["acf"]>,
-): string | null {
-  const acfValue = asString(event.acf?.[key]);
-  if (acfValue) {
-    return acfValue;
+): unknown {
+  if (event.acf && key in event.acf) {
+    return event.acf[key];
   }
 
-  return asString(event.meta?.[key]);
+  if (event.meta && key in event.meta) {
+    return event.meta[key];
+  }
+
+  return undefined;
 }
 
-function normalizeEvent(event: RawWordPressEvent): WordPressEvent {
+function readEventTextField(
+  event: RawWordPressEvent,
+  key: keyof NonNullable<RawWordPressEvent["acf"]>,
+): string | null {
+  return readUnknownText(readEventField(event, key)) || null;
+}
+
+function readEventNumberField(
+  event: RawWordPressEvent,
+  key: keyof NonNullable<RawWordPressEvent["acf"]>,
+): number | null {
+  const value = readEventField(event, key);
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string" && /^\d+$/.test(value.trim())) {
+    const parsed = Number.parseInt(value.trim(), 10);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+}
+
+function normalizeEventPoster(
+  event: RawWordPressEvent,
+  posterMap: Map<number, WordPressImage>,
+): WordPressImage | null {
+  const rawPoster = readEventField(event, "poster");
+
+  if (typeof rawPoster === "number" && Number.isFinite(rawPoster)) {
+    return posterMap.get(rawPoster) ?? null;
+  }
+
+  if (typeof rawPoster === "string") {
+    const trimmed = rawPoster.trim();
+
+    if (/^\d+$/.test(trimmed)) {
+      const posterId = Number.parseInt(trimmed, 10);
+      return posterMap.get(posterId) ?? null;
+    }
+
+    const poster = normalizeWordPressImage(trimmed, sanitizeTextField(event.title));
+
+    if (poster) {
+      return poster;
+    }
+  }
+
+  return getEmbeddedMedia(event._embedded);
+}
+
+function normalizeEvent(event: RawWordPressEvent, posterMap: Map<number, WordPressImage>): WordPressEvent {
+  const startDate = readEventTextField(event, "start_date") ?? readEventTextField(event, "event_date") ?? event.date;
+  const endDate =
+    readEventTextField(event, "end_date") ??
+    readEventTextField(event, "event_end_time") ??
+    startDate;
+  const registrationUrl =
+    readEventTextField(event, "registration_link") ??
+    readEventTextField(event, "event_registration_url");
+
   return {
     id: event.id,
     slug: event.slug,
     title: sanitizeTextField(event.title),
-    description: sanitizeTextField(event.excerpt) || "Event details will be published here once the CMS entry is configured.",
+    excerpt: sanitizeTextField(event.excerpt) || "Event details will be published here once the CMS entry is configured.",
+    content: readRenderedHtml(event.content),
     url: asString(event.link) ?? "",
-    eventDate: readEventField(event, "event_date") ?? event.date,
-    startTime: readEventField(event, "event_start_time"),
-    endTime: readEventField(event, "event_end_time"),
-    location: readEventField(event, "event_location"),
-    registrationUrl: readEventField(event, "event_registration_url"),
-    registrationLabel: readEventField(event, "event_registration_label"),
-    featuredMedia: getEmbeddedMedia(event._embedded),
+    startDate,
+    endDate,
+    eventMode: readEventTextField(event, "event_mode"),
+    venueName: readEventTextField(event, "venue_name"),
+    address:
+      readEventTextField(event, "address") ??
+      readEventTextField(event, "event_location"),
+    status: readEventTextField(event, "status"),
+    capacity: readEventNumberField(event, "capacity"),
+    ticketPrice: readEventTextField(event, "ticket_price"),
+    category: normalizeEventCategory(readEventTextField(event, "category")),
+    registrationUrl,
+    registrationLabel:
+      readEventTextField(event, "event_registration_label") ??
+      (registrationUrl ? "Register" : null),
+    poster: normalizeEventPoster(event, posterMap),
   };
+}
+
+async function fetchWordPressMediaByIds(
+  ids: number[],
+  tags: string[],
+): Promise<Map<number, WordPressImage>> {
+  const uniqueIds = Array.from(new Set(ids.filter((id) => Number.isFinite(id) && id > 0)));
+  const posterMap = new Map<number, WordPressImage>();
+
+  if (uniqueIds.length === 0) {
+    return posterMap;
+  }
+
+  const chunkSize = 100;
+
+  for (let index = 0; index < uniqueIds.length; index += chunkSize) {
+    const mediaIds = uniqueIds.slice(index, index + chunkSize);
+    const mediaItems = await fetchWordPressCollection<RawWordPressMedia>(
+      resolveWordPressOrigin(),
+      "media",
+      {
+        include: mediaIds.map((id) => String(id)),
+        per_page: Math.max(mediaIds.length, 1),
+        _fields: "id,source_url,alt_text,caption,title,media_details",
+      },
+      mergeTags(tags, ["wordpress:media"]),
+    );
+
+    for (const media of mediaItems) {
+      const normalized = normalizeMedia(media);
+      if (normalized) {
+        posterMap.set(normalized.id, normalized);
+      }
+    }
+  }
+
+  return posterMap;
+}
+
+async function normalizeEvents(events: RawWordPressEvent[], tags: string[]): Promise<WordPressEvent[]> {
+  const posterIds = events
+    .map((event) => readEventNumberField(event, "poster"))
+    .filter((value): value is number => typeof value === "number" && value > 0);
+  const posterMap = await fetchWordPressMediaByIds(posterIds, tags);
+
+  return events.map((event) => normalizeEvent(event, posterMap));
 }
 
 function readGalleryField(
@@ -734,28 +861,97 @@ export async function getLatestPosts(limit = 3): Promise<WordPressPost[]> {
 }
 
 export async function getUpcomingEvents(limit = 3): Promise<WordPressEvent[]> {
-  const events = await fetchWordPressCollection<RawWordPressEvent>(
+  const events = await fetchWordPressPagedCollection<RawWordPressEvent>(
     resolveWordPressOrigin(),
     WORDPRESS_CONTENT_TYPES.events,
     {
-      per_page: Math.max(limit * 2, 6),
+      per_page: 100,
       _embed: 1,
       _fields:
-        "id,slug,date,modified,link,title,excerpt,featured_media,acf,meta,_embedded",
+        "id,slug,date,modified,link,title,excerpt,content,featured_media,acf,meta,_embedded,_links",
       orderby: "date",
       order: "desc",
+      status: "publish",
     },
     mergeTags(["wordpress", "wordpress:events", "wordpress:homepage"]),
   );
 
-  const normalized = events.map(normalizeEvent).sort(
-    (left, right) => parseDateValue(left.eventDate) - parseDateValue(right.eventDate),
+  const normalized = await normalizeEvents(events, ["wordpress", "wordpress:events", "wordpress:homepage"]);
+  const sorted = sortEventsByStartDateAsc(normalized);
+  const upcoming = sorted.filter(isUpcomingEvent);
+
+  return (upcoming.length > 0 ? upcoming : sorted).slice(0, limit);
+}
+
+export async function getEvents(tags: string[] = ["wordpress", "wordpress:events"]): Promise<WordPressEvent[]> {
+  const events = await fetchWordPressPagedCollection<RawWordPressEvent>(
+    resolveWordPressOrigin(),
+    WORDPRESS_CONTENT_TYPES.events,
+    {
+      per_page: 100,
+      _embed: 1,
+      _fields:
+        "id,slug,date,modified,link,title,excerpt,content,featured_media,acf,meta,_embedded,_links",
+      orderby: "date",
+      order: "desc",
+      status: "publish",
+    },
+    mergeTags(tags),
   );
 
-  const now = Date.now();
-  const upcoming = normalized.filter((event) => parseDateValue(event.eventDate) >= now);
+  const normalized = await normalizeEvents(events, tags);
 
-  return (upcoming.length > 0 ? upcoming : normalized).slice(0, limit);
+  return sortEventsByStartDateDesc(normalized);
+}
+
+export async function getEventBySlug(
+  slug: string,
+  tags: string[] = ["wordpress", "wordpress:events", "wordpress:event"],
+): Promise<WordPressEvent | null> {
+  const events = await fetchWordPressCollection<RawWordPressEvent>(
+    resolveWordPressOrigin(),
+    WORDPRESS_CONTENT_TYPES.events,
+    {
+      slug,
+      per_page: 1,
+      _embed: 1,
+      _fields:
+        "id,slug,date,modified,link,title,excerpt,content,featured_media,acf,meta,_embedded,_links",
+      status: "publish",
+    },
+    mergeTags(tags, [`wordpress:event:${slug}`]),
+  );
+
+  const event = events[0];
+
+  if (!event) {
+    return null;
+  }
+
+  const normalized = await normalizeEvents([event], tags);
+  return normalized[0] ?? null;
+}
+
+export async function getEventSitemapEntries(): Promise<Array<{ slug: string; modified: string }>> {
+  const events = await fetchWordPressPagedCollection<RawWordPressEvent>(
+    resolveWordPressOrigin(),
+    WORDPRESS_CONTENT_TYPES.events,
+    {
+      per_page: 100,
+      _fields: "slug,modified,date",
+      orderby: "date",
+      order: "desc",
+      status: "publish",
+    },
+    mergeTags(["wordpress", "wordpress:events", "wordpress:sitemap"]),
+  );
+
+  return events
+    .map((event) => ({
+      slug: asString(event.slug) ?? "",
+      modified: asString(event.modified) ?? asString(event.date) ?? "",
+    }))
+    .filter((event): event is { slug: string; modified: string } => event.slug.length > 0);
 }
 
 export async function getGalleryHighlights(limit = 3): Promise<WordPressGalleryItem[]> {

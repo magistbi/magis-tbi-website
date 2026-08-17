@@ -108,6 +108,17 @@ export interface RawWordPressPost extends RawWordPressBaseContent {
 }
 
 export interface RawWordPressEventFields {
+  start_date?: string;
+  end_date?: string;
+  event_mode?: string;
+  venue_name?: string;
+  address?: string;
+  registration_link?: string;
+  status?: string;
+  capacity?: number | string;
+  ticket_price?: string;
+  category?: string;
+  poster?: number | string;
   event_date?: string;
   event_start_time?: string;
   event_end_time?: string;
@@ -183,19 +194,27 @@ export interface WordPressPost {
   featuredMedia: WordPressImage | null;
 }
 
+export type WordPressEventCategory = "workshop" | "seminar" | "networking" | "incubation";
+
 export interface WordPressEvent {
   id: number;
   slug: string;
   title: string;
-  description: string;
+  excerpt: string;
+  content: string;
   url: string;
-  eventDate: string;
-  startTime: string | null;
-  endTime: string | null;
-  location: string | null;
+  startDate: string;
+  endDate: string;
+  eventMode: string | null;
+  venueName: string | null;
+  address: string | null;
+  status: string | null;
+  capacity: number | null;
+  ticketPrice: string | null;
+  category: WordPressEventCategory | null;
   registrationUrl: string | null;
   registrationLabel: string | null;
-  featuredMedia: WordPressImage | null;
+  poster: WordPressImage | null;
 }
 
 export interface WordPressGalleryItem {

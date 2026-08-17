@@ -17,7 +17,7 @@ type SearchParamsValue = string | string[] | undefined;
 type SearchParamsInput = Record<string, SearchParamsValue> | Promise<Record<string, SearchParamsValue>>;
 
 type ArticlesPageProps = {
-  searchParams?: SearchParamsInput;
+  searchParams?: Promise<Record<string, SearchParamsValue>>;
 };
 
 export const revalidate = 300;

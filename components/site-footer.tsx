@@ -70,6 +70,7 @@ const platformLinks = [
 const resourceLinks = [
   { href: "/#programs", label: "Programs" },
   { href: "/#facilities", label: "Facilities" },
+  { href: "/events", label: "Events" },
   { href: "/#impact", label: "Impact" },
 ];
 

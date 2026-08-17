@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { MotionSurface } from "@/components/motion/motion-surface";
 import { Reveal } from "@/components/motion/reveal";
-import { articlesHref, bookingUrl, facebookPageUrl, homeHref, officeLogo } from "@/lib/site-links";
+import { articlesHref, bookingUrl, eventsHref, facebookPageUrl, homeHref, officeLogo } from "@/lib/site-links";
 
 export function SiteHeader() {
   return (
@@ -26,6 +26,9 @@ export function SiteHeader() {
           >
             <Link className="transition-opacity hover:opacity-80" href={homeHref}>
               Home
+            </Link>
+            <Link className="transition-opacity hover:opacity-80" href={eventsHref}>
+              Events
             </Link>
             <Link className="transition-opacity hover:opacity-80" href={articlesHref}>
               Articles

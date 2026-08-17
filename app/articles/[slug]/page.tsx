@@ -18,7 +18,7 @@ type ArticlePageParams = {
 };
 
 type ArticlePageProps = {
-  params: ArticlePageParams | Promise<ArticlePageParams>;
+  params: Promise<ArticlePageParams>;
 };
 
 const loadArticle = cache(async (slug: string) =>
