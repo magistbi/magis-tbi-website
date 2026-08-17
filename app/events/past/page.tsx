@@ -8,7 +8,6 @@ import { Reveal } from "@/components/motion/reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/stagger-group";
 import { StructuredData } from "@/components/structured-data";
 import {
-  countEventsByCategory,
   filterEventsByCategory,
   formatEventDateTimeAttribute,
   getEventCategoryLabel,
@@ -134,9 +133,7 @@ export default async function PastEventsPage({ searchParams }: PastEventsPagePro
   const activeCategory = parseCategoryParam(resolvedSearchParams.category);
   const events = await loadEvents();
   const closedEvents = sortEventsByStartDateDesc(filterEventsByCategory(events.filter(isPastEvent), activeCategory));
-  const closedCategoryCounts = countEventsByCategory(closedEvents);
   const pastJsonLd = buildPastEventsJsonLd(events, activeCategory);
-  const activeCategoryLabel = activeCategory ? getEventCategoryLabel(activeCategory) : "All events";
 
   return (
     <main className="relative overflow-hidden">
@@ -145,98 +142,55 @@ export default async function PastEventsPage({ searchParams }: PastEventsPagePro
 
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
         <Reveal as="section" className="space-y-5" direction="up">
-          <div className="rounded-[1.8rem] border border-outline-variant/70 bg-white/94 p-6 shadow-sm backdrop-blur sm:p-8">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div className="max-w-3xl space-y-3">
-                <div className="flex flex-wrap items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-secondary">
-                  <Link
-                    className="transition-colors hover:text-primary"
-                    href={getEventsPageHref(activeCategory)}
-                  >
-                    Back to catalog
-                  </Link>
-                  <span aria-hidden="true" className="text-outline-variant">
-                    ·
-                  </span>
-                  <span>Archive</span>
-                </div>
-                <h1 className="font-heading text-[clamp(2.15rem,4.6vw,3.8rem)] leading-[1.02] tracking-[-0.045em] text-primary">
-                  Closed events archive.
-                </h1>
-                <p className="max-w-2xl text-base leading-7 text-on-surface-variant sm:text-lg">
-                  Browse the full history of ADNU MAGIS TBI events marked as closed.
-                  The archive stays compact so you can scan titles, dates, and venues quickly.
-                </p>
+          <div className="rounded-[1.5rem] border border-outline-variant/70 bg-surface-container-lowest/94 p-6 shadow-sm backdrop-blur sm:p-8">
+            <div className="max-w-3xl space-y-3">
+              <div className="flex flex-wrap items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-secondary">
+                <Link className="transition-colors hover:text-primary" href={getEventsPageHref(activeCategory)}>
+                  Back to catalog
+                </Link>
+                <span aria-hidden="true" className="text-outline-variant">
+                  ·
+                </span>
+                <span>Archive</span>
               </div>
-
-              <div className="flex flex-wrap gap-3">
-                <div className="rounded-2xl border border-outline-variant/60 bg-surface-container-low px-4 py-3 shadow-sm">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-secondary">
-                    Closed entries
-                  </p>
-                  <p className="mt-1 text-xl font-heading text-primary">{closedEvents.length}</p>
-                </div>
-                <div className="rounded-2xl border border-outline-variant/60 bg-surface-container-low px-4 py-3 shadow-sm">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-secondary">
-                    View
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-primary">{activeCategoryLabel}</p>
-                </div>
-                <div className="rounded-2xl border border-outline-variant/60 bg-surface-container-low px-4 py-3 shadow-sm">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-secondary">
-                    Sort
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-primary">Newest first</p>
-                </div>
-              </div>
+              <h1 className="font-heading text-[clamp(2.1rem,4.4vw,3.6rem)] leading-[1.03] tracking-[-0.045em] text-primary">
+                Closed events archive.
+              </h1>
+              <p className="max-w-2xl text-base leading-7 text-on-surface-variant sm:text-lg">
+                Browse the history of closed ADNU MAGIS TBI events.
+              </p>
             </div>
           </div>
 
           <div className="lg:sticky lg:top-[5.5rem] lg:z-30">
-            <div className="rounded-[1.5rem] border border-outline-variant/70 bg-white/88 p-4 shadow-sm backdrop-blur-sm sm:p-5">
-              <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.28em] text-secondary">
-                    Narrow the archive
-                  </p>
-                  <p className="text-sm leading-6 text-on-surface-variant">
-                    Filters stay visible while you scan the archive. On small screens, swipe the chip row.
-                  </p>
-                </div>
-                <p className="text-sm text-on-surface-variant">
-                  {closedEvents.length} closed event{closedEvents.length === 1 ? "" : "s"} match this view.
+            <div className="rounded-[1.5rem] border border-outline-variant/70 bg-surface-container-lowest/92 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+              <div className="flex flex-col gap-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.28em] text-secondary">
+                  Browse by category
                 </p>
-              </div>
-
-              <div className="mt-4">
-                <EventCategoryFilters
-                  activeCategory={activeCategory}
-                  baseHref="/events/past"
-                  categoryCounts={closedCategoryCounts}
-                  totalCount={closedEvents.length}
-                />
+                <EventCategoryFilters activeCategory={activeCategory} baseHref="/events/past" />
               </div>
             </div>
           </div>
         </Reveal>
 
         <section className="space-y-5">
-          <Reveal as="div" className="flex flex-wrap items-end justify-between gap-3" direction="up">
+          <Reveal as="div" className="flex items-end justify-between gap-3" direction="up">
             <div className="space-y-1">
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-secondary">
-                Archive list
-              </p>
               <h2 className="font-heading text-2xl tracking-[-0.03em] text-primary sm:text-3xl">
-                Most recent closed events
+                Closed events
               </h2>
             </div>
-            <p className="text-sm text-on-surface-variant">
-              Events are ordered by `start_date`, newest first.
-            </p>
+            <Link
+              className="inline-flex items-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-2 text-sm font-semibold text-primary transition-colors hover:border-primary hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+              href={getEventsPageHref(activeCategory)}
+            >
+              Back to events
+            </Link>
           </Reveal>
 
           {closedEvents.length > 0 ? (
-            <StaggerGroup as="div" className="grid gap-6 md:grid-cols-2 xl:grid-cols-3" tone="calm">
+            <StaggerGroup as="div" className="grid gap-6 lg:grid-cols-2" tone="calm">
               {closedEvents.map((event) => (
                 <StaggerItem key={event.id} as="div">
                   <EventCard event={event} variant="compact" />
@@ -246,24 +200,24 @@ export default async function PastEventsPage({ searchParams }: PastEventsPagePro
           ) : (
             <Reveal
               as="div"
-              className="rounded-[1.75rem] border border-dashed border-outline-variant/70 bg-white p-8 text-center shadow-sm"
+              className="rounded-[1.5rem] border border-dashed border-outline-variant/70 bg-surface-container-lowest p-8 text-center shadow-sm"
               direction="up"
             >
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-secondary">
                 No closed events
               </p>
               <p className="mt-3 text-base leading-7 text-on-surface-variant">
-                There are no closed events for the selected filter right now.
+                No closed events match this filter.
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-3">
                 <Link
-                  className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-bold text-on-primary shadow-sm transition-all hover:bg-tertiary"
+                  className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-semibold text-on-primary shadow-sm transition-colors hover:bg-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                   href={getEventsPageHref(null)}
                 >
                   Clear filter
                 </Link>
                 <Link
-                  className="inline-flex items-center justify-center rounded-lg border border-outline-variant bg-white px-5 py-3 text-sm font-bold text-primary transition-all hover:border-primary hover:text-secondary"
+                  className="inline-flex items-center justify-center rounded-lg border border-outline-variant bg-surface-container-lowest px-5 py-3 text-sm font-semibold text-primary transition-colors hover:border-primary hover:text-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                   href="/events"
                 >
                   Back to events

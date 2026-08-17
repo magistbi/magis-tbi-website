@@ -5,10 +5,14 @@ import { cache } from "react";
 
 import { MotionSurface } from "@/components/motion/motion-surface";
 import { Reveal } from "@/components/motion/reveal";
-import { StaggerGroup, StaggerItem } from "@/components/motion/stagger-group";
 import { StructuredData } from "@/components/structured-data";
-import { formatArticleDate, getArticleAuthorName, getArticlePrimaryCategory } from "@/lib/articles";
-import { articlesHref } from "@/lib/site-links";
+import {
+  formatArticleDate,
+  getArticleAuthorName,
+  getArticlePrimaryCategory,
+  getArticleReadTimeLabel,
+} from "@/lib/articles";
+import { articlesHref, homeHref } from "@/lib/site-links";
 import { getSiteUrl } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { getPostBySlug } from "@/lib/wordpress";
@@ -150,50 +154,43 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 }
 
 function ArticleHeroMedia({
-  title,
-  category,
   imageUrl,
   imageAlt,
+  title,
 }: {
-  title: string;
-  category: string;
   imageUrl: string | null;
   imageAlt: string;
+  title: string;
 }) {
-  if (imageUrl) {
-    return (
-      <div className="relative min-h-80 overflow-hidden bg-[linear-gradient(160deg,#dae2ff_0%,#eff4ff_35%,#ffffff_100%)] lg:min-h-full">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,199,44,0.3),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(0,26,72,0.12),transparent_40%)]" />
-        <img
-          alt={imageAlt}
-          className="absolute inset-0 h-full w-full object-cover object-center"
-          decoding="async"
-          loading="eager"
-          src={imageUrl}
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-primary/45 via-primary/8 to-transparent" />
-        <span className="absolute left-5 top-5 inline-flex items-center rounded-full bg-white/92 px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-primary shadow-sm backdrop-blur">
-          {category}
-        </span>
-      </div>
-    );
-  }
-
   return (
-    <div className="relative min-h-80 overflow-hidden bg-[linear-gradient(160deg,#dae2ff_0%,#eff4ff_35%,#ffffff_100%)] lg:min-h-full">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,199,44,0.38),transparent_36%),radial-gradient(circle_at_bottom_left,rgba(0,26,72,0.16),transparent_40%)]" />
-      <div className="absolute inset-0 flex flex-col justify-between p-5 sm:p-6">
-        <span className="inline-flex w-fit items-center rounded-full bg-white/90 px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-primary shadow-sm backdrop-blur">
-          {category}
-        </span>
-        <div className="max-w-sm space-y-2">
-          <div className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/60">
-            WordPress article
+    <div className="relative overflow-hidden rounded-[1.75rem] border border-outline-variant/60 bg-[linear-gradient(160deg,#dae2ff_0%,#eff4ff_35%,#ffffff_100%)] shadow-sm">
+      <div className="relative aspect-16/10 min-h-72 overflow-hidden sm:aspect-3/2 lg:aspect-video lg:min-h-112">
+        {imageUrl ? (
+          <img
+            alt={imageAlt}
+            className="absolute inset-0 h-full w-full object-cover object-center"
+            decoding="async"
+            loading="eager"
+            src={imageUrl}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-[linear-gradient(145deg,#dbe4ff_0%,#eff4ff_45%,#ffffff_100%)] px-6">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,199,44,0.28),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(0,26,72,0.12),transparent_42%)]" />
+            <div className="relative max-w-sm space-y-3 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-outline-variant/50 bg-white/80 text-2xl font-semibold tracking-[-0.04em] text-primary shadow-sm backdrop-blur">
+                {title.slice(0, 1).toUpperCase() || "A"}
+              </div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary/55">
+                Feature image unavailable
+              </p>
+              <p className="text-sm leading-6 text-primary/70">
+                The article still reads cleanly without a hero image.
+              </p>
+            </div>
           </div>
-          <div className="text-3xl font-semibold leading-none text-primary/20 sm:text-5xl">
-            {title.slice(0, 1).toUpperCase() || "A"}
-          </div>
-        </div>
+        )}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,199,44,0.22),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(0,26,72,0.14),transparent_40%),linear-gradient(180deg,rgba(0,26,72,0.06),rgba(0,26,72,0.24))]" />
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-primary/30 to-transparent" />
       </div>
     </div>
   );
@@ -217,6 +214,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
   const authorName = getArticleAuthorName(post);
   const categoryName = getArticlePrimaryCategory(post);
   const formattedDate = formatArticleDate(post.date) || "Recently published";
+  const readTimeLabel = getArticleReadTimeLabel(post.content);
   const heroImage = post.featuredMedia?.url ?? null;
   const heroImageAlt = post.featuredMedia?.alt || post.title;
   const hasContent = post.content.trim().length > 0;
@@ -237,94 +235,110 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
       />
       <div className="absolute inset-x-0 top-0 -z-10 h-128 bg-[radial-gradient(circle_at_top_left,rgba(255,199,44,0.16),transparent_35%),radial-gradient(circle_at_top_right,rgba(0,26,72,0.12),transparent_34%),linear-gradient(180deg,rgba(229,238,255,0.92),rgba(248,249,255,0))]" />
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-5 px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
         <Reveal as="div" direction="up" tone="calm" trigger="mount">
-          <MotionSurface as="div" className="inline-flex" tone="subtle">
-            <Link
-              className="inline-flex w-fit items-center gap-2 rounded-full border border-outline-variant/70 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary hover:text-secondary"
-              href={articlesHref}
-            >
-              <span aria-hidden="true">←</span>
-              Back to archive
-            </Link>
-          </MotionSurface>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-on-surface-variant">
+              <Link className="transition-colors hover:text-primary" href={homeHref}>
+                Home
+              </Link>
+              <span aria-hidden="true" className="text-outline-variant">
+                /
+              </span>
+              <Link className="transition-colors hover:text-primary" href={articlesHref}>
+                Articles
+              </Link>
+              <span aria-hidden="true" className="text-outline-variant">
+                /
+              </span>
+              <span className="font-medium text-primary">{categoryName}</span>
+            </nav>
+
+            <MotionSurface as="div" tone="subtle">
+              <Link
+                className="inline-flex items-center gap-2 rounded-full border border-outline-variant/70 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary hover:text-secondary"
+                href={articlesHref}
+              >
+                <span aria-hidden="true">←</span>
+                Back to archive
+              </Link>
+            </MotionSurface>
+          </div>
         </Reveal>
 
-        <article className="overflow-hidden rounded-[2rem] border border-outline-variant/70 bg-white shadow-sm">
-          <div className="grid lg:grid-cols-[1.08fr_0.92fr]">
-            <StaggerGroup
-              as="div"
-              className="flex flex-col gap-6 p-6 sm:p-8 lg:p-10"
-              tone="calm"
-              trigger="mount"
-            >
-              <StaggerItem as="div" direction="up" tone="calm">
-                <div className="flex flex-wrap items-center gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-secondary">
-                  <span>{categoryName}</span>
-                  <span aria-hidden="true" className="text-outline-variant">
-                    ·
-                  </span>
-                  <time dateTime={post.date}>{formattedDate}</time>
-                </div>
-              </StaggerItem>
+        <article className="overflow-hidden rounded-[2rem] border border-outline-variant/70 bg-surface-container-lowest shadow-sm">
+          <Reveal
+            as="header"
+            className="border-b border-outline-variant/60 px-6 py-7 sm:px-8 sm:py-8 lg:px-10 lg:py-10"
+            direction="up"
+            tone="calm"
+            trigger="mount"
+          >
+            <div className="max-w-4xl">
+              <div className="flex flex-wrap items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-secondary">
+                <span className="inline-flex items-center rounded-full bg-secondary-container px-3 py-1 text-[0.72rem] font-semibold tracking-[0.18em] text-on-secondary-container">
+                  {categoryName}
+                </span>
+                <span aria-hidden="true" className="text-outline-variant">
+                  ·
+                </span>
+              </div>
 
-              <StaggerItem as="div" direction="up" tone="calm">
-                <div className="space-y-4">
-                  <h1 className="max-w-3xl font-heading text-[clamp(2.2rem,5vw,4.25rem)] leading-[1.02] tracking-[-0.04em] text-primary">
-                    {post.title}
-                  </h1>
-                  <p className="max-w-3xl text-lg leading-8 text-on-surface-variant sm:text-xl">
-                    {articleDescription}
-                  </p>
-                </div>
-              </StaggerItem>
+              <h1 className="mt-4 font-heading text-[clamp(2.4rem,5vw,4.6rem)] leading-[0.96] tracking-tighter text-primary sm:leading-[0.94]">
+                {post.title}
+              </h1>
 
-              <StaggerItem as="div" direction="up" tone="calm">
-                <div className="flex flex-wrap items-center gap-4 border-t border-outline-variant/60 pt-5">
-                  <div className="flex items-center gap-3">
-                    {post.author?.avatarUrl ? (
-                      <img
-                        alt={authorName}
-                        className="h-12 w-12 rounded-full border border-outline-variant/50 object-cover"
-                        decoding="async"
-                        loading="lazy"
-                        src={post.author.avatarUrl}
-                      />
-                    ) : (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-outline-variant/50 bg-primary/10 text-sm font-semibold text-primary">
-                        {authorName.slice(0, 1).toUpperCase()}
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-secondary">
-                        Written by
-                      </p>
-                      <p className="text-sm font-semibold text-primary">{authorName}</p>
+              <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm text-on-surface-variant">
+                <div className="flex items-center gap-3">
+                  {post.author?.avatarUrl ? (
+                    <img
+                      alt={authorName}
+                      className="h-11 w-11 rounded-full border border-outline-variant/50 object-cover"
+                      decoding="async"
+                      loading="lazy"
+                      src={post.author.avatarUrl}
+                    />
+                  ) : (
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full border border-outline-variant/50 bg-primary/10 text-sm font-semibold text-primary">
+                      {authorName.slice(0, 1).toUpperCase()}
                     </div>
+                  )}
+                  <div>
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-secondary">
+                      Written by
+                    </p>
+                    <p className="font-semibold text-primary">{authorName}</p>
                   </div>
                 </div>
-              </StaggerItem>
-            </StaggerGroup>
+                <span aria-hidden="true" className="text-outline-variant">
+                  ·
+                </span>
+                <time dateTime={post.date}>{formattedDate}</time>
+                <span aria-hidden="true" className="text-outline-variant">
+                  ·
+                </span>
+                <span>{readTimeLabel}</span>
+              </div>
+            </div>
+          </Reveal>
 
-            <Reveal as="div" className="lg:h-full" direction="right" tone="calm" trigger="mount">
-              <ArticleHeroMedia
-                category={categoryName}
-                imageAlt={heroImageAlt}
-                imageUrl={heroImage}
-                title={post.title}
-              />
+          <div className="px-4 pt-4 sm:px-6 lg:px-10 lg:pt-6">
+            <Reveal as="div" direction="right" tone="calm" trigger="mount">
+              <ArticleHeroMedia imageAlt={heroImageAlt} imageUrl={heroImage} title={post.title} />
             </Reveal>
           </div>
 
-          <div className="border-t border-outline-variant/60 px-6 py-8 sm:px-8 lg:px-10">
-            <Reveal as="div" className={cn("max-w-3xl", !hasContent && "space-y-4")} direction="up" tone="calm">
+          <div className="px-6 py-8 sm:px-8 lg:px-10 lg:py-12">
+            <Reveal
+              as="div"
+              className={cn("mx-auto max-w-[72ch]", !hasContent && "space-y-4")}
+              direction="up"
+              tone="calm"
+            >
               {hasContent ? (
-                <div
-                  className="article-content"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
-                />
+                <div className="article-content" dangerouslySetInnerHTML={{ __html: post.content }} />
               ) : (
-                <div className="rounded-[1.5rem] border border-dashed border-outline-variant/70 bg-surface-container-low px-5 py-6 text-on-surface-variant">
+                <div className="rounded-2xl border border-dashed border-outline-variant/70 bg-surface-container-low px-5 py-6 text-on-surface-variant">
                   <p className="text-sm font-semibold uppercase tracking-[0.22em] text-secondary">
                     Article body unavailable
                   </p>
@@ -335,6 +349,20 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
                 </div>
               )}
             </Reveal>
+
+            <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-outline-variant/60 pt-6">
+              <p className="text-sm leading-6 text-on-surface-variant">
+                Continue browsing the archive for more stories from ADNU MAGIS TBI.
+              </p>
+              <MotionSurface as="div" tone="subtle">
+                <Link
+                  className="inline-flex items-center gap-2 rounded-full border border-outline-variant/70 bg-white px-4 py-2 text-sm font-semibold text-primary shadow-sm transition-colors hover:border-primary hover:text-secondary"
+                  href={articlesHref}
+                >
+                  Back to archive
+                </Link>
+              </MotionSurface>
+            </div>
           </div>
         </article>
       </div>

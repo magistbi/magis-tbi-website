@@ -236,23 +236,27 @@
 
 @layer components {
   .article-content {
-    @apply text-[1.05rem] leading-8 text-on-surface-variant;
+    @apply text-[1.0625rem] leading-8 text-on-surface-variant;
   }
 
   .article-content > * + * {
-    @apply mt-6;
+    @apply mt-7;
   }
 
   .article-content p {
-    @apply text-[1.05rem] leading-8;
+    @apply text-[1.0625rem] leading-8;
+  }
+
+  .article-content > p:first-child {
+    @apply text-[1.125rem] leading-8 text-primary;
   }
 
   .article-content h2 {
-    @apply mt-10 font-heading text-2xl leading-tight text-primary;
+    @apply mt-12 font-heading text-[1.6rem] leading-tight tracking-[-0.02em] text-primary;
   }
 
   .article-content h3 {
-    @apply mt-8 font-heading text-xl leading-tight text-primary;
+    @apply mt-9 font-heading text-[1.25rem] leading-tight tracking-[-0.01em] text-primary;
   }
 
   .article-content h4 {
@@ -269,18 +273,18 @@
   }
 
   .article-content a {
-    @apply font-semibold text-primary underline decoration-secondary/50 underline-offset-4 transition-colors hover:text-secondary;
+    @apply font-semibold text-primary underline decoration-secondary/60 underline-offset-4 transition-colors hover:text-secondary;
   }
 
   .article-content img,
   .article-content video,
   .article-content iframe,
   .article-content embed {
-    @apply my-8 block h-auto w-full max-w-full rounded-[1.5rem] border border-outline-variant/40 shadow-sm;
+    @apply my-8 block h-auto w-full max-w-full rounded-2xl border border-outline-variant/40 shadow-sm;
   }
 
   .article-content figure {
-    @apply my-8 overflow-hidden rounded-[1.5rem] border border-outline-variant/40 bg-white shadow-sm;
+    @apply my-8 overflow-hidden rounded-2xl border border-outline-variant/40 bg-white shadow-sm;
   }
 
   .article-content figure img {
@@ -292,15 +296,31 @@
   }
 
   .article-content blockquote {
-    @apply my-8 border-l-4 border-secondary bg-secondary/10 px-5 py-4 text-primary;
+    @apply my-8 rounded-2xl border-l-4 border-secondary bg-secondary/10 px-5 py-5 text-primary shadow-sm;
   }
 
   .article-content blockquote p {
     @apply text-base leading-8;
   }
 
+  .article-content pre {
+    @apply my-8 overflow-x-auto rounded-2xl border border-outline-variant/40 bg-primary px-5 py-4 text-sm leading-7 text-white shadow-sm;
+  }
+
+  .article-content pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+
+  .article-content code:not(pre code) {
+    @apply rounded-md bg-surface-container-low px-1.5 py-0.5 text-[0.95em] font-medium text-primary;
+  }
+
+  .article-content hr {
+    @apply my-10 border-outline-variant/50;
+  }
+
   .article-content table {
-    @apply my-8 w-full overflow-hidden rounded-[1.25rem] border border-outline-variant/40 bg-white text-left shadow-sm;
+    @apply my-8 w-full border-collapse overflow-hidden rounded-2xl border border-outline-variant/40 bg-white text-left text-sm shadow-sm;
   }
 
   .article-content th,

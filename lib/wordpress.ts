@@ -288,6 +288,59 @@ function normalizeMedia(media: RawWordPressMedia | undefined): WordPressImage | 
   return normalizeWordPressImage(media, sanitizeTextField(media?.title));
 }
 
+interface WordPressMediaReference {
+  id: number | null;
+  url: string | null;
+}
+
+function readWordPressMediaId(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string" && /^\d+$/.test(value.trim())) {
+    const parsed = Number.parseInt(value.trim(), 10);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+}
+
+export function readWordPressMediaReference(value: unknown): WordPressMediaReference {
+  const directId = readWordPressMediaId(value);
+  if (directId !== null) {
+    return { id: directId, url: null };
+  }
+
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+
+    if (trimmed.length === 0) {
+      return { id: null, url: null };
+    }
+
+    const id = readWordPressMediaId(trimmed);
+    if (id !== null) {
+      return { id, url: null };
+    }
+
+    return { id: null, url: trimmed };
+  }
+
+  if (!isRecord(value)) {
+    return { id: null, url: null };
+  }
+
+  const id =
+    readWordPressMediaId(value.id) ??
+    readWordPressMediaId(value.ID) ??
+    readWordPressMediaId(value.media_id) ??
+    readWordPressMediaId(value.attachment_id);
+  const url = asString(value.url) ?? asString(value.source_url);
+
+  return { id, url };
+}
+
 async function fetchWordPressImageFromHref(
   href: string,
   fallbackAlt: string,
@@ -425,7 +478,10 @@ function parseCommaSeparatedList(value: string): string[] {
     .filter((item) => item.length > 0);
 }
 
-function normalizeStartup(startup: RawWordPressStartup): WordPressStartup {
+function normalizeStartup(
+  startup: RawWordPressStartup,
+  logoMap: Map<number, WordPressImage> = new Map(),
+): WordPressStartup {
   const startupName =
     readUnknownText(readStartupField(startup, "startup_name")) ||
     sanitizeTextField(startup.title) ||
@@ -433,12 +489,15 @@ function normalizeStartup(startup: RawWordPressStartup): WordPressStartup {
 
   const founderNames = parseCommaSeparatedList(readUnknownText(readStartupField(startup, "founder_names")));
   const cohort = readUnknownText(readStartupField(startup, "cohort")) || null;
-  const logoUrl = asString(readStartupField(startup, "logo"));
+  const logoReference = readWordPressMediaReference(readStartupField(startup, "logo"));
   const description =
     readUnknownText(readStartupField(startup, "description")) ||
     sanitizeTextField(startup.excerpt) ||
     "Startup details will be published here once the CMS entry is configured.";
-  const logo = logoUrl ? normalizeWordPressImage(logoUrl, startupName) : getEmbeddedMedia(startup._embedded);
+  const logo =
+    (logoReference.id !== null ? logoMap.get(logoReference.id) ?? null : null) ??
+    (logoReference.url ? normalizeWordPressImage(logoReference.url, startupName) : null) ??
+    getEmbeddedMedia(startup._embedded);
 
   return {
     id: startup.id,
@@ -616,28 +675,16 @@ function normalizeEventPoster(
   event: RawWordPressEvent,
   posterMap: Map<number, WordPressImage>,
 ): WordPressImage | null {
-  const rawPoster = readEventField(event, "poster");
+  const posterReference = readWordPressMediaReference(readEventField(event, "poster"));
+  const fallbackAlt = sanitizeTextField(event.title);
+  const poster =
+    posterReference.id !== null
+      ? posterMap.get(posterReference.id) ?? (posterReference.url ? normalizeWordPressImage(posterReference.url, fallbackAlt) : null)
+      : posterReference.url
+        ? normalizeWordPressImage(posterReference.url, fallbackAlt)
+        : null;
 
-  if (typeof rawPoster === "number" && Number.isFinite(rawPoster)) {
-    return posterMap.get(rawPoster) ?? null;
-  }
-
-  if (typeof rawPoster === "string") {
-    const trimmed = rawPoster.trim();
-
-    if (/^\d+$/.test(trimmed)) {
-      const posterId = Number.parseInt(trimmed, 10);
-      return posterMap.get(posterId) ?? null;
-    }
-
-    const poster = normalizeWordPressImage(trimmed, sanitizeTextField(event.title));
-
-    if (poster) {
-      return poster;
-    }
-  }
-
-  return getEmbeddedMedia(event._embedded);
+  return poster ?? getEmbeddedMedia(event._embedded);
 }
 
 function normalizeEvent(event: RawWordPressEvent, posterMap: Map<number, WordPressImage>): WordPressEvent {
@@ -715,7 +762,7 @@ async function fetchWordPressMediaByIds(
 
 async function normalizeEvents(events: RawWordPressEvent[], tags: string[]): Promise<WordPressEvent[]> {
   const posterIds = events
-    .map((event) => readEventNumberField(event, "poster"))
+    .map((event) => readWordPressMediaReference(readEventField(event, "poster")).id)
     .filter((value): value is number => typeof value === "number" && value > 0);
   const posterMap = await fetchWordPressMediaByIds(posterIds, tags);
 
@@ -880,6 +927,7 @@ export async function getUpcomingEvents(limit = 3): Promise<WordPressEvent[]> {
     WORDPRESS_CONTENT_TYPES.events,
     {
       per_page: 100,
+      acf_format: "standard",
       _embed: 1,
       _fields:
         "id,slug,date,modified,link,title,excerpt,content,featured_media,acf,meta,_embedded,_links",
@@ -903,6 +951,7 @@ export async function getEvents(tags: string[] = ["wordpress", "wordpress:events
     WORDPRESS_CONTENT_TYPES.events,
     {
       per_page: 100,
+      acf_format: "standard",
       _embed: 1,
       _fields:
         "id,slug,date,modified,link,title,excerpt,content,featured_media,acf,meta,_embedded,_links",
@@ -928,6 +977,7 @@ export async function getEventBySlug(
     {
       slug,
       per_page: 1,
+      acf_format: "standard",
       _embed: 1,
       _fields:
         "id,slug,date,modified,link,title,excerpt,content,featured_media,acf,meta,_embedded,_links",
@@ -1003,7 +1053,12 @@ export async function getStartupGraduates(): Promise<WordPressStartup[]> {
     mergeTags(["wordpress", "wordpress:startups", "wordpress:homepage"]),
   );
 
-  return startupEntries.map(normalizeStartup).sort((left, right) =>
+  const logoIds = startupEntries
+    .map((startup) => readWordPressMediaReference(readStartupField(startup, "logo")).id)
+    .filter((value): value is number => typeof value === "number" && value > 0);
+  const logoMap = await fetchWordPressMediaByIds(logoIds, ["wordpress", "wordpress:startups", "wordpress:homepage"]);
+
+  return startupEntries.map((startup) => normalizeStartup(startup, logoMap)).sort((left, right) =>
     left.startupName.localeCompare(right.startupName),
   );
 }

@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "npm run test:events",
-    "test:events": "node tests/events-classification.test.mjs"
+    "test": "npm run test:events && npm run test:wordpress-media",
+    "test:events": "node tests/events-classification.test.mjs",
+    "test:wordpress-media": "node tests/wordpress-media-reference.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

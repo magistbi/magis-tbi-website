@@ -34,6 +34,18 @@ export function formatArticleDate(value: string, locale = "en-US"): string {
   }).format(date);
 }
 
+function stripArticleMarkup(value: string): string {
+  return value.replace(/<[^>]*>/g, " ");
+}
+
+export function getArticleReadTimeLabel(content: string, wordsPerMinute = 200): string {
+  const cleanedContent = stripArticleMarkup(content).trim();
+  const wordCount = cleanedContent ? cleanedContent.split(/\s+/).length : 0;
+  const minutes = Math.max(1, Math.round(wordCount / wordsPerMinute));
+
+  return `${minutes} min read`;
+}
+
 export function getArticlePrimaryCategory(post: WordPressPost): string {
   return post.categories[0]?.name ?? "News";
 }

@@ -118,7 +118,7 @@ export interface RawWordPressEventFields {
   capacity?: number | string;
   ticket_price?: string;
   category?: string;
-  poster?: number | string;
+  poster?: unknown;
   event_date?: string;
   event_start_time?: string;
   event_end_time?: string;
@@ -146,7 +146,7 @@ export interface RawWordPressGalleryItem extends RawWordPressBaseContent {
 export interface RawWordPressStartupFields {
   startup_name?: string;
   founder_names?: string;
-  logo?: string;
+  logo?: unknown;
   cohort?: string;
   description?: string;
 }
