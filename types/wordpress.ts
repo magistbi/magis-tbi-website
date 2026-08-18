@@ -148,6 +148,7 @@ export interface RawWordPressStartupFields {
   founder_names?: string;
   logo?: unknown;
   cohort?: string;
+  industry?: string;
   description?: string;
 }
 
@@ -232,6 +233,7 @@ export interface WordPressStartup {
   startupName: string;
   founderNames: string[];
   cohort: string | null;
+  industry: string | null;
   description: string;
   logo: WordPressImage | null;
 }

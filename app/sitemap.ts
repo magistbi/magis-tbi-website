@@ -3,6 +3,7 @@ import type { MetadataRoute } from "next";
 import { getArticlesPageHref, getArticleHref } from "@/lib/articles";
 import { getEventHref, getEventsPageHref, getPastEventsPageHref } from "@/lib/events";
 import { getSiteUrl } from "@/lib/site";
+import { igniteGraduatesHref } from "@/lib/site-links";
 import { getEventSitemapEntries, getPostSitemapEntries } from "@/lib/wordpress";
 
 export const revalidate = 300;
@@ -41,6 +42,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 0.7,
+    },
+    {
+      url: getSiteUrl(igniteGraduatesHref),
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
     },
     ...posts.map((post) => ({
       url: getSiteUrl(getArticleHref({ slug: post.slug })),

@@ -3,6 +3,7 @@ export const officeLogo = "/magis-logo.png";
 export const homeHref = "/";
 export const articlesHref = "/articles";
 export const eventsHref = "/events";
+export const igniteGraduatesHref = "/ignite-graduates";
 
 export const bookingUrl = "https://app.lapsula.com/book/adnu-magistbi";
 export const facebookPageUrl = "https://www.facebook.com/adnu.magis.tbi";

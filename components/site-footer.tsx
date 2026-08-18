@@ -7,6 +7,7 @@ import {
   facebookPageUrl,
   googleMapsEmbedUrl,
   googleMapsUrl,
+  igniteGraduatesHref,
   linkedinPageUrl,
   officeLogo,
 } from "@/lib/site-links";
@@ -62,7 +63,7 @@ function LocationOnIcon(props: IconProps) {
 
 const platformLinks = [
   { href: "/#about", label: "About Us" },
-  { href: "/#cohorts", label: "Startups" },
+  { href: igniteGraduatesHref, label: "Startups" },
   { href: "/#goals", label: "Goals" },
   { href: "/#contact", label: "Contact" },
 ];

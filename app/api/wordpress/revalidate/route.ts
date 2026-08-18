@@ -97,7 +97,7 @@ function isAuthorizedRequest(request: Request, body: WordPressRevalidationReques
 }
 
 function buildRevalidationPathSet(body: WordPressRevalidationRequestBody | null): Set<string> {
-  const paths = new Set<string>(["/", "/articles", "/events", "/events/past", "/sitemap.xml"]);
+  const paths = new Set<string>(["/", "/articles", "/events", "/events/past", "/ignite-graduates", "/sitemap.xml"]);
 
   for (const path of parseStringArray(body?.paths)) {
     paths.add(path.startsWith("/") ? path : `/${path}`);

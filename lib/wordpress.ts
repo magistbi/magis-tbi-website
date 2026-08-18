@@ -489,6 +489,7 @@ function normalizeStartup(
 
   const founderNames = parseCommaSeparatedList(readUnknownText(readStartupField(startup, "founder_names")));
   const cohort = readUnknownText(readStartupField(startup, "cohort")) || null;
+  const industry = readUnknownText(readStartupField(startup, "industry")) || null;
   const logoReference = readWordPressMediaReference(readStartupField(startup, "logo"));
   const description =
     readUnknownText(readStartupField(startup, "description")) ||
@@ -505,6 +506,7 @@ function normalizeStartup(
     startupName,
     founderNames,
     cohort,
+    industry,
     description,
     logo,
   };
@@ -1046,7 +1048,7 @@ export async function getStartupGraduates(): Promise<WordPressStartup[]> {
       per_page: 100,
       _embed: 1,
       acf_format: "standard",
-      _fields: "id,slug,date,modified,link,title,featured_media,acf,meta,_embedded",
+      _fields: "id,slug,date,modified,link,title,featured_media,acf,meta,_embedded,industry",
       orderby: "date",
       order: "desc",
     },

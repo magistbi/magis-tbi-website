@@ -1,5 +1,5 @@
 import { magisIdentity, magisLocation } from "@/lib/magis-content";
-import { articlesHref, bookingUrl, eventsHref, facebookPageUrl, homeHref, linkedinPageUrl } from "@/lib/site-links";
+import { articlesHref, bookingUrl, eventsHref, facebookPageUrl, homeHref, igniteGraduatesHref, linkedinPageUrl } from "@/lib/site-links";
 import { getSiteUrl } from "@/lib/site";
 
 function buildLlmsText(): string {
@@ -11,6 +11,7 @@ Official website for the Ateneo de Naga University technology business incubator
 - Home: ${getSiteUrl(homeHref)}
 - Articles archive: ${getSiteUrl(articlesHref)}
 - Events catalog: ${getSiteUrl(eventsHref)}
+- Startup graduates: ${getSiteUrl(igniteGraduatesHref)}
 - Sitemap: ${getSiteUrl("/sitemap.xml")}
 - Booking: ${bookingUrl}
 - Facebook: ${facebookPageUrl}

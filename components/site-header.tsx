@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { MotionSurface } from "@/components/motion/motion-surface";
 import { Reveal } from "@/components/motion/reveal";
-import { articlesHref, bookingUrl, eventsHref, facebookPageUrl, homeHref, officeLogo } from "@/lib/site-links";
+import { articlesHref, bookingUrl, eventsHref, facebookPageUrl, homeHref, igniteGraduatesHref, officeLogo } from "@/lib/site-links";
 
 export function SiteHeader() {
   return (
@@ -32,6 +32,9 @@ export function SiteHeader() {
             </Link>
             <Link className="rounded-full px-3 py-1.5 transition-colors hover:bg-surface-container hover:text-primary" href={articlesHref}>
               Articles
+            </Link>
+            <Link className="rounded-full px-3 py-1.5 transition-colors hover:bg-surface-container hover:text-primary" href={igniteGraduatesHref}>
+              Startups
             </Link>
           </nav>
 
