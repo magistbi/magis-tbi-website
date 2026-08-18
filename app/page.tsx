@@ -21,7 +21,15 @@ import {
 } from "@/lib/magis-content";
 import { ArticleCard } from "@/components/articles/article-card";
 import { StructuredData } from "@/components/structured-data";
-import { articlesHref, bookingUrl, facebookPageUrl, linkedinPageUrl } from "@/lib/site-links";
+import {
+  articlesHref,
+  bookingUrl,
+  facebookPageUrl,
+  getStartupHref,
+  igniteGraduatesHref,
+  linkedinPageUrl,
+  startupGraduatesSectionId,
+} from "@/lib/site-links";
 import { getArticleHref } from "@/lib/articles";
 import { getSiteUrl } from "@/lib/site";
 import { buildWordPressImageUrl, getLatestPosts, getStartupGraduates } from "@/lib/wordpress";
@@ -272,22 +280,23 @@ function buildHomepageJsonLd() {
 function StartupLogoCard({
   startup,
   duplicate = false,
+  href,
 }: {
   startup: WordPressStartup;
   duplicate?: boolean;
+  href?: string;
 }) {
   const founderSummary =
     startup.founderNames.length > 0
       ? `Founded by ${startup.founderNames.join(", ")}.`
       : "Founder details available in WordPress.";
   const tooltip = founderSummary;
-
-  return (
+  const card = (
     <figure
       aria-hidden={duplicate || undefined}
-      className={`flex w-32 shrink-0 items-center justify-center rounded-lg border border-outline-variant/50 bg-surface-container-lowest px-2 py-3 shadow-sm sm:w-40 sm:px-3 sm:py-4 ${
-        duplicate ? "startup-carousel-duplicate" : ""
-      }`}
+      className={`flex w-32 shrink-0 items-center justify-center rounded-lg border border-outline-variant/50 bg-surface-container-lowest px-2 py-3 shadow-sm transition-transform duration-300 ${duplicate ? "startup-carousel-duplicate" : ""} ${
+        href && !duplicate ? "group-hover:border-primary/50 group-hover:shadow-[0_16px_30px_rgba(11,28,48,0.08)]" : ""
+      } sm:w-40 sm:px-3 sm:py-4`}
       title={tooltip}
     >
       <div className="flex h-16 w-full items-center justify-center sm:h-20">
@@ -310,6 +319,20 @@ function StartupLogoCard({
         )}
       </div>
     </figure>
+  );
+
+  if (!href) {
+    return card;
+  }
+
+  return (
+    <Link
+      aria-label={`View profile for ${startup.startupName}`}
+      className="group block h-full rounded-lg outline-none transition-transform duration-300 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+      href={href}
+    >
+      {card}
+    </Link>
   );
 }
 
@@ -343,6 +366,7 @@ function StartupCarousel({ startups }: { startups: WordPressStartup[] }) {
               key={`${startup.id}-${index}`}
               startup={startup}
               duplicate={index >= topRowStartups.length}
+              href={getStartupHref(startup.slug)}
             />
           ))}
         </div>
@@ -353,6 +377,7 @@ function StartupCarousel({ startups }: { startups: WordPressStartup[] }) {
                 key={`${startup.id}-${index}`}
                 startup={startup}
                 duplicate={index >= bottomRowStartups.length}
+                href={getStartupHref(startup.slug)}
               />
             ))}
           </div>
@@ -657,9 +682,13 @@ export default async function Home() {
         </div>
       </section>
 
-      <section id="cohorts" className="bg-surface py-14 sm:py-20">
+      <section id={startupGraduatesSectionId} className="scroll-mt-28 bg-surface py-14 sm:scroll-mt-32 sm:py-20 lg:scroll-mt-36">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Reveal as="div" className="mb-10 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end" direction="up">
+          <Reveal
+            as="div"
+            className="mb-10 flex flex-col items-start justify-between gap-4 md:mb-12 md:flex-row md:items-end"
+            direction="up"
+          >
             <div className="max-w-2xl">
               <p className="mb-3 text-[12px] font-semibold uppercase tracking-[0.28em] text-secondary">
                 Cohorts
@@ -672,8 +701,18 @@ export default async function Home() {
                 program.
               </p>
             </div>
-            <div className="rounded-lg bg-secondary-container px-3 py-2 text-[11px] font-bold uppercase tracking-[0.28em] text-on-secondary-container sm:px-4 sm:text-[12px]">
-              {startupGraduates.length} startups
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="rounded-lg bg-secondary-container px-3 py-2 text-[11px] font-bold uppercase tracking-[0.28em] text-on-secondary-container sm:px-4 sm:text-[12px]">
+                {startupGraduates.length} startups
+              </div>
+              <MotionSurface as="div" tone="button">
+                <Link
+                  className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-3 text-sm font-bold text-on-primary shadow-sm transition-all hover:bg-tertiary sm:px-6"
+                  href={igniteGraduatesHref}
+                >
+                  View graduates page
+                </Link>
+              </MotionSurface>
             </div>
           </Reveal>
 

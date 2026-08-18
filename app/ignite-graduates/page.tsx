@@ -7,7 +7,7 @@ import { StartupShowcaseCard } from "@/components/startups/startup-showcase-card
 import { Reveal } from "@/components/motion/reveal";
 import { StaggerGroup, StaggerItem } from "@/components/motion/stagger-group";
 import { magisCohorts } from "@/lib/magis-content";
-import { facebookPageUrl, igniteGraduatesHref } from "@/lib/site-links";
+import { facebookPageUrl, getStartupHref, igniteGraduatesHref } from "@/lib/site-links";
 import {
   collectStartupFilterOptions,
   filterStartupsByQuery,
@@ -281,9 +281,8 @@ export default async function IgniteGraduatesPage({ searchParams }: IgniteGradua
               {featuredStartups[0] ? (
                 <StaggerItem as="div">
                   <StartupShowcaseCard
-                    profileHref={`#${featuredStartups[0].slug}`}
-                    storyHref="#graduates-directory"
-                    storyLabel="Read case study"
+                    storyHref={getStartupHref(featuredStartups[0].slug)}
+                    storyLabel="Read profile"
                     startup={featuredStartups[0]}
                     variant="featured"
                   />
@@ -293,8 +292,8 @@ export default async function IgniteGraduatesPage({ searchParams }: IgniteGradua
               <StaggerItem as="div">
                 {featuredStartups[1] ? (
                   <StartupShowcaseCard
-                    profileHref={`#${featuredStartups[1].slug}`}
-                    storyHref="#graduates-directory"
+                    storyHref={getStartupHref(featuredStartups[1].slug)}
+                    storyLabel="Read profile"
                     startup={featuredStartups[1]}
                     variant="accent"
                   />

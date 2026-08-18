@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { MotionSurface } from "@/components/motion/motion-surface";
+import { getStartupHref } from "@/lib/site-links";
 import { cn } from "@/lib/utils";
 import type { WordPressStartup } from "@/types/wordpress";
 
@@ -111,7 +112,7 @@ export function StartupShowcaseCard({
 }: StartupShowcaseCardProps) {
   const dark = variant === "accent";
   const compact = variant === "compact";
-  const resolvedProfileHref = profileHref ?? `#${startup.slug}`;
+  const resolvedProfileHref = profileHref ?? getStartupHref(startup.slug);
   const industryLabel = startup.industry ?? "Industry pending";
   const cohortLabel = startup.cohort ?? "Cohort pending";
   const primaryChipLabel = startup.industry ?? startup.cohort ?? "Graduate";

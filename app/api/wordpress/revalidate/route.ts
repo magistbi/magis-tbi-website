@@ -13,6 +13,7 @@ type WordPressRevalidationRequestBody = {
   paths?: unknown;
   postSlugs?: unknown;
   eventSlugs?: unknown;
+  startupSlugs?: unknown;
   slugs?: unknown;
 };
 
@@ -59,7 +60,7 @@ function parseStringArray(value: unknown): string[] {
     .filter((item): item is string => item !== null);
 }
 
-function getNestedStringArray(value: unknown, key: "posts" | "events"): string[] {
+function getNestedStringArray(value: unknown, key: "posts" | "events" | "startups"): string[] {
   if (!isRecord(value)) {
     return [];
   }
@@ -111,6 +112,10 @@ function buildRevalidationPathSet(body: WordPressRevalidationRequestBody | null)
     paths.add(`/events/${encodeURIComponent(slug)}`);
   }
 
+  for (const slug of parseStringArray(body?.startupSlugs)) {
+    paths.add(`/ignite-graduates/${encodeURIComponent(slug)}`);
+  }
+
   if (isRecord(body?.slugs)) {
     for (const slug of getNestedStringArray(body?.slugs, "posts")) {
       paths.add(`/articles/${encodeURIComponent(slug)}`);
@@ -118,6 +123,10 @@ function buildRevalidationPathSet(body: WordPressRevalidationRequestBody | null)
 
     for (const slug of getNestedStringArray(body?.slugs, "events")) {
       paths.add(`/events/${encodeURIComponent(slug)}`);
+    }
+
+    for (const slug of getNestedStringArray(body?.slugs, "startups")) {
+      paths.add(`/ignite-graduates/${encodeURIComponent(slug)}`);
     }
   }
 
@@ -139,6 +148,10 @@ function buildRevalidationTagSet(body: WordPressRevalidationRequestBody | null):
     tags.add(`wordpress:event:${slug}`);
   }
 
+  for (const slug of parseStringArray(body?.startupSlugs)) {
+    tags.add(`wordpress:startup:${slug}`);
+  }
+
   if (isRecord(body?.slugs)) {
     for (const slug of getNestedStringArray(body?.slugs, "posts")) {
       tags.add(`wordpress:post:${slug}`);
@@ -146,6 +159,10 @@ function buildRevalidationTagSet(body: WordPressRevalidationRequestBody | null):
 
     for (const slug of getNestedStringArray(body?.slugs, "events")) {
       tags.add(`wordpress:event:${slug}`);
+    }
+
+    for (const slug of getNestedStringArray(body?.slugs, "startups")) {
+      tags.add(`wordpress:startup:${slug}`);
     }
   }
 

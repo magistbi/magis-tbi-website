@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 import { getArticlesPageHref, getArticleHref } from "@/lib/articles";
 import { getEventHref, getEventsPageHref, getPastEventsPageHref } from "@/lib/events";
 import { getSiteUrl } from "@/lib/site";
-import { igniteGraduatesHref } from "@/lib/site-links";
-import { getEventSitemapEntries, getPostSitemapEntries } from "@/lib/wordpress";
+import { getStartupHref, igniteGraduatesHref } from "@/lib/site-links";
+import { getEventSitemapEntries, getPostSitemapEntries, getStartupSitemapEntries } from "@/lib/wordpress";
 
 export const revalidate = 300;
 
@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const posts = await getPostSitemapEntries();
   const events = await getEventSitemapEntries();
+  const startups = await getStartupSitemapEntries();
 
   return [
     {
@@ -58,6 +59,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...events.map((event) => ({
       url: getSiteUrl(getEventHref({ slug: event.slug })),
       lastModified: parseDate(event.modified),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    ...startups.map((startup) => ({
+      url: getSiteUrl(getStartupHref(startup.slug)),
+      lastModified: parseDate(startup.modified),
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),

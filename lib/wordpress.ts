@@ -611,6 +611,11 @@ export interface WordPressSitemapPostEntry {
   modified: string;
 }
 
+export interface WordPressSitemapStartupEntry {
+  slug: string;
+  modified: string;
+}
+
 export async function getPostSitemapEntries(): Promise<WordPressSitemapPostEntry[]> {
   const posts = await fetchWordPressPagedCollection<RawWordPressPost>(
     resolveWordPressOrigin(),
@@ -998,6 +1003,38 @@ export async function getEventBySlug(
   return normalized[0] ?? null;
 }
 
+export async function getStartupBySlug(
+  slug: string,
+  tags: string[] = ["wordpress", "wordpress:startups", "wordpress:startup"],
+): Promise<WordPressStartup | null> {
+  const startupEntries = await fetchWordPressCollection<RawWordPressStartup>(
+    resolveWordPressDomainOrigin(),
+    WORDPRESS_CONTENT_TYPES.startups,
+    {
+      slug,
+      per_page: 1,
+      _embed: 1,
+      acf_format: "standard",
+      _fields: "id,slug,date,modified,link,title,excerpt,acf,meta,_embedded,industry",
+      status: "publish",
+    },
+    mergeTags(tags, [`wordpress:startup:${slug}`]),
+  );
+
+  const startup = startupEntries[0];
+
+  if (!startup) {
+    return null;
+  }
+
+  const logoIds = [readWordPressMediaReference(readStartupField(startup, "logo")).id].filter(
+    (value): value is number => typeof value === "number" && value > 0,
+  );
+  const logoMap = await fetchWordPressMediaByIds(logoIds, mergeTags(tags, ["wordpress:media"]));
+
+  return normalizeStartup(startup, logoMap);
+}
+
 export async function getEventSitemapEntries(): Promise<Array<{ slug: string; modified: string }>> {
   const events = await fetchWordPressPagedCollection<RawWordPressEvent>(
     resolveWordPressOrigin(),
@@ -1018,6 +1055,28 @@ export async function getEventSitemapEntries(): Promise<Array<{ slug: string; mo
       modified: asString(event.modified) ?? asString(event.date) ?? "",
     }))
     .filter((event): event is { slug: string; modified: string } => event.slug.length > 0);
+}
+
+export async function getStartupSitemapEntries(): Promise<WordPressSitemapStartupEntry[]> {
+  const startups = await fetchWordPressPagedCollection<RawWordPressStartup>(
+    resolveWordPressDomainOrigin(),
+    WORDPRESS_CONTENT_TYPES.startups,
+    {
+      per_page: 100,
+      _fields: "slug,modified,date",
+      orderby: "date",
+      order: "desc",
+      status: "publish",
+    },
+    mergeTags(["wordpress", "wordpress:startups", "wordpress:sitemap"]),
+  );
+
+  return startups
+    .map((startup) => ({
+      slug: asString(startup.slug) ?? "",
+      modified: asString(startup.modified) ?? asString(startup.date) ?? "",
+    }))
+    .filter((startup): startup is WordPressSitemapStartupEntry => startup.slug.length > 0);
 }
 
 export async function getGalleryHighlights(limit = 3): Promise<WordPressGalleryItem[]> {
